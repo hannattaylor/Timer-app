@@ -1,0 +1,28 @@
+@media only screen and (max-width: 990px) {
+  nav {
+    background-color: white;
+    font-family: "PT Sans", sans-serif;
+    width: 100%vw;
+    height: 100%;
+    align-items: center;
+
+    section {
+      background-color: black;
+      display: flex;
+      flex-direction: column;
+      place-items: center;
+      a {
+        padding: 1rem;
+        color: white;
+        text-decoration: none;
+      }
+    }
+  }
+  img {
+    height: 10vh;
+  }
+
+  a {
+    color: white;
+  }
+}
