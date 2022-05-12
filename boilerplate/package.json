@@ -1,7 +1,6 @@
 {
   "name": "empty-project",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "keywords": [],
   "author": "",
@@ -22,5 +21,6 @@
     "easytimer.js": "^4.5.3",
     "react": "^18.1.0",
     "react-dom": "^18.1.0"
-  }
+  },
+  "description": ""
 }
