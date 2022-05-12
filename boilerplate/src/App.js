@@ -1,5 +1,10 @@
 import React from "react";
+import { Timer } from "./Components/Timer";
 
 export function App() {
-  return <h1>Hello world!</h1>;
+  return (
+    <section id="timer">
+      <Timer />
+    </section>
+  );
 }
