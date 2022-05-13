@@ -1,11 +1,17 @@
 import useTimer from "easytimer-react-hook";
-import { Link } from "react-router-dom";
-import React from "react";
-import { useEffect } from "react";
+import * as React from "react";
 import { useState } from "react";
 import Analog from "../Pages/Analog";
+import { Link } from "react-router-dom";
+import styles from "./Header.module.scss";
+import logo from "../Images/naviconblack.svg";
 
-export function Timer() {
+// type Props = {
+//   time: string;
+// };
+
+export function Timer2() {
+  const [toggleDropdown, setToggleDropdown] = useState(false);
   const [count, setCount] = useState(0);
   const [interval, setInterval] = useState(false);
   const [startTimer, setStartTimer] = useState(false);
@@ -20,17 +26,17 @@ export function Timer() {
   function startTimerFunction() {
     setStartTimer(() => true);
     timer.start({
-      startValues: [0, 5, 0, 0, 0],
-      // startValues: {
-      //   minutes: count,
-      // },
+      startValues: {
+        minutes: count,
+      },
       countdown: true,
     });
   }
 
-  // interface interfaceTimer {
-  //   startValues: number;
-  // }
+  interface interfaceTimer {
+    startValues: number;
+    countdown: true;
+  }
 
   let pauseTimer = () => timer.pause();
   let stopTimer = () => timer.stop();
@@ -54,10 +60,28 @@ export function Timer() {
     setInterval(() => !interval);
   }
   // }, [startTimer]);
-  console.log(interval);
 
   return (
     <section>
+      <nav className={styles.section}>
+        <img
+          className={styles.img}
+          src={logo}
+          alt="picture of logo"
+          onClick={() => setToggleDropdown(!toggleDropdown)}
+        />
+
+        {toggleDropdown ? (
+          <section onClick={() => setToggleDropdown(false)}>
+            <Link to="/analog">Analog timer</Link>
+            <Link to="/digital">Digital timer</Link>
+            <Link to="/visuell">Visuell timer</Link>
+          </section>
+        ) : (
+          <section></section>
+        )}
+      </nav>
+
       <section>
         <h1 onClick={add}>◀︎</h1>
         <h1> {count}</h1>
@@ -65,7 +89,7 @@ export function Timer() {
       </section>
       {startTimer ? <div>{timer.getTimeValues().toString()}</div> : null}
       <button onClick={startTimerFunction}>starta här</button>
-      <Analog />
+      <Analog time={timer.getTimeValues().toString()} />
 
       <button onClick={pauseTimer}> pausa här</button>
       <button onClick={stopTimer}> stoppa här</button>
