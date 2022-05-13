@@ -84,6 +84,7 @@ export function Timer2() {
 
       <section>
         <h1 onClick={add}>◀︎</h1>
+        hej
         <h1> {count}</h1>
         <h1 onClick={sub}> ▶︎</h1>
       </section>
