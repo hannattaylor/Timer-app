@@ -91,7 +91,7 @@ export function Timer2() {
         <h1> {count}</h1>
         <h1 onClick={sub}>◀︎</h1>
 
-        <Link to="analog">
+        <Link to={selectPage}>
           <button onClick={startTimerFunction}>starta här</button>
         </Link>
         <form>
@@ -112,7 +112,7 @@ export function Timer2() {
         <Digital time={timer.getTimeValues().toString()} />
       ) : null}
       {startTimer && selectPage === "visuell" ? (
-        <Visuell time={timer.getTimeValues().toString()} />
+        <Visuell time={timer.getTimeValues()} />
       ) : null}
     </section>
   );

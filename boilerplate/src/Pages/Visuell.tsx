@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import * as styles from "./Visuell.module.scss";
+import styles from "./Visuell.module.scss";
+import "../App.scss";
 
 type Props = {
   time: {
@@ -18,9 +19,10 @@ function Visuel({ time }: Props) {
   console.log(timetest);
 
   return (
-    <section className={styles}>
+    <section className="visuell">
       {timetest > 0 ? (
         <article
+          className="animation"
           style={{ animation: `timeglas linear ${timetest}s` }}
         ></article>
       ) : null}
