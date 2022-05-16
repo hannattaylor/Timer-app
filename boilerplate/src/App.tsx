@@ -19,7 +19,6 @@ export function App() {
           <Route path="/visuell" element={< />}></Route> */}
         </Routes>
         <Loading />
-        {/* <Timer2 /> */}
       </BrowserRouter>
     </main>
   );

@@ -6,8 +6,8 @@ import { Link } from "react-router-dom";
 import * as styles from "./Header.module.scss";
 import logoblack from "../Images/naviconblack.svg";
 import logowhite from "../Images/naviconwhite.svg";
-import Digital from "../Pages/Digital";
-import Visuell from "../Pages/Visuell";
+// import Digital from "../Pages/Digital";
+// import Visuell from "../Pages/Visuell";
 
 interface interfaceTimer {
   startValues: number;
@@ -91,12 +91,12 @@ export function Timer2() {
       {startTimer && selectPage === "analog" ? (
         <Analog time={timer.getTimeValues().toString()} />
       ) : null}
-      {startTimer && selectPage === "digital" ? (
+      {/* {startTimer && selectPage === "digital" ? (
         <Digital time={timer.getTimeValues().toString()} />
       ) : null}
       {startTimer && selectPage === "visuell" ? (
         <Visuell time={timer.getTimeValues().toString()} />
-      ) : null}
+      ) : null} */}
 
       <form>
         <label htmlFor="fiveminbreak">5 min break</label>
