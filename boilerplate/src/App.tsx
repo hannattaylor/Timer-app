@@ -14,7 +14,7 @@ export function App() {
     <main>
       <BrowserRouter>
         <Routes>
-          <Route path="/analog" element={<Analog />}></Route>
+          <Route path="/analog"></Route>
           {/* <Route path="/digital" element={< />}></Route>
           <Route path="/visuell" element={< />}></Route> */}
         </Routes>

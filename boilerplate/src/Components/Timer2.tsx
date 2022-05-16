@@ -20,7 +20,7 @@ export function Timer2() {
   const [interval, setInterval] = useState(false);
   const [pause, setPause] = useState(false);
   const [startTimer, setStartTimer] = useState(false);
-  const [selectPage, setSelectPage] = useState("");
+  const [selectPage, setSelectPage] = useState("analog");
   const [timer, isTargetAchieved] = useTimer({});
 
   let pauseFiveMin = () => setPause(() => !pause);
@@ -89,7 +89,7 @@ export function Timer2() {
       </section>
       <button onClick={startTimerFunction}>starta här</button>
       {startTimer && selectPage === "analog" ? (
-        <Analog time={timer.getTimeValues().toString()} />
+        <Analog timeCounter={timer.getTimeValues()} />
       ) : null}
       {/* {startTimer && selectPage === "digital" ? (
         <Digital time={timer.getTimeValues().toString()} />

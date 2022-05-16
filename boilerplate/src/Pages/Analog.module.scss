@@ -1,0 +1,37 @@
+#clockSection {
+  position: relative;
+}
+
+#clock {
+  min-width: 278px;
+  min-height: 278px;
+  position: absolute;
+  left: calc((100% - 278px) / 2);
+}
+#sek {
+  position: absolute;
+  top: 13px;
+  left: calc((100% - 10.99px) / 2);
+  overflow: visible;
+  animation: sekunder 60s linear infinite;
+  transform-origin: center;
+  z-index: 2;
+}
+
+#min {
+  position: absolute;
+  top: 15px;
+  left: calc((100% - 17px) / 2);
+  overflow: visible;
+  // transform: rotate(6deg);
+  transform-origin: center;
+}
+
+@keyframes sekunder {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(-1turn);
+  }
+}
