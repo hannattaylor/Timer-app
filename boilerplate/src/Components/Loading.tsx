@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import logo from "../Images/poster.png";
 import { Timer2 } from "./Timer2";
 

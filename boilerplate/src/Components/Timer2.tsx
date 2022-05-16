@@ -33,6 +33,8 @@ export function Timer2() {
     if (count > 0) setCount((prev) => count - 1);
   }
   function startTimerFunction() {
+    const section = document.getElementById("timerSection")!;
+    section.style.display = "none";
     setStartTimer(() => true);
     timer.start({
       startValues:
@@ -55,7 +57,11 @@ export function Timer2() {
     <section>
       <nav className={styles.nav}>
         <img
-          src={toggleDropdown ? `${logowhite}` : `${logoblack}`}
+          src={
+            toggleDropdown || selectPage === "visuell"
+              ? `${logowhite}`
+              : `${logoblack}`
+          }
           alt="picture of logo"
           onClick={() => setToggleDropdown(!toggleDropdown)}
         />
@@ -77,17 +83,28 @@ export function Timer2() {
               Visuell timer
             </Link>
           </section>
-        ) : (
-          <section></section>
-        )}
+        ) : null}
       </nav>
 
-      <section>
-        <h1 onClick={add}>◀︎</h1>
+      <section id="timerSection">
+        <h1 onClick={add}>▶︎</h1>
         <h1> {count}</h1>
-        <h1 onClick={sub}> ▶︎</h1>
+        <h1 onClick={sub}>◀︎</h1>
+
+        <Link to="analog">
+          <button onClick={startTimerFunction}>starta här</button>
+        </Link>
+        <form>
+          <label htmlFor="fiveminbreak">5 min break</label>
+          <input
+            type="checkbox"
+            onClick={pauseFiveMin}
+            id="fiveminbreak"
+          ></input>
+          <label htmlFor="interval">Interval</label>
+          <input type="checkbox" id="interval" onClick={intervalTimer}></input>
+        </form>
       </section>
-      <button onClick={startTimerFunction}>starta här</button>
       {startTimer && selectPage === "analog" ? (
         <Analog timeCounter={timer.getTimeValues()} />
       ) : null}
@@ -97,20 +114,6 @@ export function Timer2() {
       {startTimer && selectPage === "visuell" ? (
         <Visuell time={timer.getTimeValues().toString()} />
       ) : null} */}
-
-      <form>
-        <label htmlFor="fiveminbreak">5 min break</label>
-        <input type="checkbox" onClick={pauseFiveMin} id="fiveminbreak"></input>
-        <label htmlFor="interval">Interval</label>
-        <input type="checkbox" id="interval" onClick={intervalTimer}></input>
-      </form>
-
-      <article
-        id={startTimer ? "article" : ""}
-        style={{ animation: `timglas linear ${count * 60}s` }}
-      >
-        test för att ändra bakgrundfärg med transition
-      </article>
     </section>
   );
 }

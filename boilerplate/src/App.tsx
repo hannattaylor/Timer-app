@@ -1,6 +1,6 @@
 // import React from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import Header from "./Components/Header";
+// import Header from "./Components/Header";
 import { Timer } from "./Components/Timer";
 import { Timer2 } from "./Components/Timer2";
 import Analog from "./Pages/Analog";
@@ -14,9 +14,10 @@ export function App() {
     <main>
       <BrowserRouter>
         <Routes>
+          <Route path="/"></Route>
           <Route path="/analog"></Route>
-          {/* <Route path="/digital" element={< />}></Route>
-          <Route path="/visuell" element={< />}></Route> */}
+          <Route path="/digital"></Route>
+          <Route path="/visuell"></Route>
         </Routes>
         <Loading />
       </BrowserRouter>
