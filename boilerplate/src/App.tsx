@@ -7,6 +7,7 @@ import Analog from "./Pages/Analog";
 import { createContext } from "react";
 import { useState } from "react";
 import useTimer from "easytimer-react-hook";
+import Loading from "./Components/Loading";
 
 export function App() {
   return (
@@ -17,8 +18,8 @@ export function App() {
           {/* <Route path="/digital" element={< />}></Route>
           <Route path="/visuell" element={< />}></Route> */}
         </Routes>
-        {/* <Timer /> */}
-        <Timer2 />
+        <Loading />
+        {/* <Timer2 /> */}
       </BrowserRouter>
     </main>
   );

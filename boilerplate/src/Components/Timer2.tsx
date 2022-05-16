@@ -3,19 +3,28 @@ import * as React from "react";
 import { useState } from "react";
 import Analog from "../Pages/Analog";
 import { Link } from "react-router-dom";
-import styles from "./Header.module.scss";
-import logo from "../Images/naviconblack.svg";
+import * as styles from "./Header.module.scss";
+import logoblack from "../Images/naviconblack.svg";
+import logowhite from "../Images/naviconwhite.svg";
+import Digital from "../Pages/Digital";
+import Visuell from "../Pages/Visuell";
 
-// type Props = {
-//   time: string;
-// };
-
+interface interfaceTimer {
+  startValues: number;
+  countdown: boolean;
+  target: number;
+}
 export function Timer2() {
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [count, setCount] = useState(0);
   const [interval, setInterval] = useState(false);
+  const [pause, setPause] = useState(false);
   const [startTimer, setStartTimer] = useState(false);
+  const [selectPage, setSelectPage] = useState("");
   const [timer, isTargetAchieved] = useTimer({});
+
+  let pauseFiveMin = () => setPause(() => !pause);
+  let intervalTimer = () => setInterval(() => !interval);
 
   function add() {
     setCount((prev) => count + 1);
@@ -26,56 +35,47 @@ export function Timer2() {
   function startTimerFunction() {
     setStartTimer(() => true);
     timer.start({
-      startValues: {
-        minutes: count,
-      },
+      startValues:
+        // [0, 2, 0, 0, 0],
+        {
+          minutes: count,
+        },
       countdown: true,
     });
   }
 
-  interface interfaceTimer {
-    startValues: number;
-    countdown: true;
+  if (!timer.isRunning() && pause === true && startTimer === true) {
+    setTimeout(startTimerFunction, 50000);
   }
-
-  let pauseTimer = () => timer.pause();
-  let stopTimer = () => timer.stop();
-
-  function pauseFiveMin() {
-    setInterval(() => !interval);
+  if (!timer.isRunning() && interval === true && startTimer === true) {
+    setTimeout(startTimerFunction, 1000);
   }
-
-  // useEffect(() => {
-  if (!timer.isRunning() && interval === true) {
-    console.log("hej");
-    timer.start({
-      startValues: [0, 3, 0, 0, 0],
-      countdown: true,
-    });
-
-    if (!timer.isRunning()) {
-      startTimerFunction();
-      console.log("starta på nyy");
-    }
-    setInterval(() => !interval);
-  }
-  // }, [startTimer]);
 
   return (
     <section>
-      <nav className={styles.section}>
+      <nav className={styles.nav}>
         <img
-          className={styles.img}
-          src={logo}
+          src={toggleDropdown ? `${logowhite}` : `${logoblack}`}
           alt="picture of logo"
           onClick={() => setToggleDropdown(!toggleDropdown)}
         />
 
         {toggleDropdown ? (
           <section onClick={() => setToggleDropdown(false)}>
-            <Link to="/analog">Analog timer</Link>
-            <Link to="/digital">Digital timer</Link>
-            <Link to="/visuell">Visuell timer</Link>
+            <img
+              src={logowhite}
+              alt="picture of logo"
+              onClick={() => setToggleDropdown(!toggleDropdown)}
+            />
+            <Link to="/analog" onClick={() => setSelectPage("analog")}>
+              Analog timer
+            </Link>
+            <Link to="/digital" onClick={() => setSelectPage("digital")}>
+              Digital timer
+            </Link>
+            <Link to="/visuell" onClick={() => setSelectPage("visuell")}>
+              Visuell timer
+            </Link>
           </section>
         ) : (
           <section></section>
@@ -84,19 +84,33 @@ export function Timer2() {
 
       <section>
         <h1 onClick={add}>◀︎</h1>
-        hej
         <h1> {count}</h1>
         <h1 onClick={sub}> ▶︎</h1>
       </section>
-      {startTimer ? <div>{timer.getTimeValues().toString()}</div> : null}
       <button onClick={startTimerFunction}>starta här</button>
-      <Analog time={timer.getTimeValues().toString()} />
+      {startTimer && selectPage === "analog" ? (
+        <Analog time={timer.getTimeValues().toString()} />
+      ) : null}
+      {startTimer && selectPage === "digital" ? (
+        <Digital time={timer.getTimeValues().toString()} />
+      ) : null}
+      {startTimer && selectPage === "visuell" ? (
+        <Visuell time={timer.getTimeValues().toString()} />
+      ) : null}
 
-      <button onClick={pauseTimer}> pausa här</button>
-      <button onClick={stopTimer}> stoppa här</button>
       <form>
-        <input type="checkbox" onClick={pauseFiveMin}></input>
+        <label htmlFor="fiveminbreak">5 min break</label>
+        <input type="checkbox" onClick={pauseFiveMin} id="fiveminbreak"></input>
+        <label htmlFor="interval">Interval</label>
+        <input type="checkbox" id="interval" onClick={intervalTimer}></input>
       </form>
+
+      <article
+        id={startTimer ? "article" : ""}
+        style={{ animation: `timglas linear ${count * 60}s` }}
+      >
+        test för att ändra bakgrundfärg med transition
+      </article>
     </section>
   );
 }
