@@ -6,8 +6,8 @@ import { Link } from "react-router-dom";
 import * as styles from "./Header.module.scss";
 import logoblack from "../Images/naviconblack.svg";
 import logowhite from "../Images/naviconwhite.svg";
-// import Digital from "../Pages/Digital";
-// import Visuell from "../Pages/Visuell";
+import Digital from "../Pages/Digital";
+import Visuell from "../Pages/Visuell";
 
 interface interfaceTimer {
   startValues: number;
@@ -91,12 +91,12 @@ export function Timer2() {
       {startTimer && selectPage === "analog" ? (
         <Analog time={timer.getTimeValues().toString()} />
       ) : null}
-      {/* {startTimer && selectPage === "digital" ? (
+      {startTimer && selectPage === "digital" ? (
         <Digital time={timer.getTimeValues().toString()} />
       ) : null}
       {startTimer && selectPage === "visuell" ? (
-        <Visuell time={timer.getTimeValues().toString()} />
-      ) : null} */}
+        <Visuell time={timer.getTimeValues()} />
+      ) : null}
 
       <form>
         <label htmlFor="fiveminbreak">5 min break</label>
@@ -104,13 +104,6 @@ export function Timer2() {
         <label htmlFor="interval">Interval</label>
         <input type="checkbox" id="interval" onClick={intervalTimer}></input>
       </form>
-
-      <article
-        id={startTimer ? "article" : ""}
-        style={{ animation: `timglas linear ${count * 60}s` }}
-      >
-        test för att ändra bakgrundfärg med transition
-      </article>
     </section>
   );
 }

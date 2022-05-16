@@ -1,0 +1,70 @@
+@keyframes timeglas {
+  0% {
+    background: linear-gradient(#e66465 10%, #9198e5);
+  }
+  25% {
+    background: linear-gradient(#e66465 30%, #9198e5);
+  }
+  50% {
+    background: linear-gradient(#e66465 60%, #9198e5);
+  }
+  75% {
+    background-color: green;
+  }
+  100% {
+    background-color: red;
+  }
+}
+
+// @keyframes timeglas {
+//   0% {
+//     background-color: red;
+//     height: 100vh;
+//   }
+//   25% {
+//     background-color: yellow;
+//     height: 75vh;
+//   }
+//   50% {
+//     background-color: blue;
+//   }
+//   75% {
+//     background-color: green;
+//     height: 25vh;
+//   }
+//   100% {
+//     background-color: red;
+//     height: 0vh;
+//   }
+// }
+
+.visuell {
+  height: 20vh;
+  width: 100vw;
+  background-color: red;
+  position: absolute;
+  top: 0;
+}
+
+@keyframes timeglas {
+  0% {
+    background-color: red;
+    top: 10;
+  }
+  25% {
+    background-color: yellow;
+    top: 30;
+  }
+  50% {
+    background-color: blue;
+    top: 50;
+  }
+  75% {
+    background-color: green;
+    top: 75;
+  }
+  100% {
+    background-color: red;
+    top: 90;
+  }
+}
