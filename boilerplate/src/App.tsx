@@ -4,10 +4,9 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { Timer } from "./Components/Timer";
 import { Timer2 } from "./Components/Timer2";
 import Analog from "./Pages/Analog";
-import { createContext } from "react";
-import { useState } from "react";
-import useTimer from "easytimer-react-hook";
 import Loading from "./Components/Loading";
+import Visuel from "./Pages/Visuell";
+import Digital from "./Pages/Digital";
 
 export function App() {
   return (
