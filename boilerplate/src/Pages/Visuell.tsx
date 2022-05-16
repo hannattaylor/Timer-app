@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import styles from "./Visuell.module.scss";
 import "../App.scss";
+import ResetBtn from "../Components/ResetBtn";
 
 type Props = {
   time: {
@@ -9,23 +10,31 @@ type Props = {
     minutes: number;
   };
 };
-function Visuel({ time }: Props) {
-  const [timetest, settimtest] = useState(0);
-  console.log(time?.minutes);
 
+//Funktion som tar emot vald tid via props från "Timer"
+function Visuel({ time }: Props) {
+  const [timerTime, setTimerTime] = useState(0);
+  console.log(time?.minutes + "min" + time.seconds + "sek");
+
+  //Funktion som stannar animation
+  function resetTimer() {
+    setTimerTime(() => 0);
+  }
+
+  //Sätt tiden när komponenten laddas in
   useEffect(() => {
-    settimtest(() => time?.minutes * 60);
+    setTimerTime(() => time?.minutes * 60);
   }, []);
-  console.log(timetest);
 
   return (
     <section className="visuell">
-      {timetest > 0 ? (
+      {timerTime > 0 ? (
         <article
           className="animation"
-          style={{ animation: `timeglas linear ${timetest}s` }}
+          style={{ animation: `hourglass linear ${timerTime}s` }}
         ></article>
       ) : null}
+      <ResetBtn reset={resetTimer} />
     </section>
   );
 }
