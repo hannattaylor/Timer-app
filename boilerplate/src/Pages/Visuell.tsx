@@ -18,16 +18,11 @@ function Visuel({ time }: Props) {
   console.log(timetest);
 
   return (
-    <section>
+    <section className={styles}>
       {timetest > 0 ? (
-        <section
-          className={styles.visuell}
-          //   style={{ transitionDuration: ` ${timetest}s` }}
-          //   style={{ background: "linear-gradient(#e66465, #9198e5)" }}
+        <article
           style={{ animation: `timeglas linear ${timetest}s` }}
-        >
-          <h1>Visuell</h1>
-        </section>
+        ></article>
       ) : null}
     </section>
   );
