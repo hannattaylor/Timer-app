@@ -25,4 +25,16 @@
   a {
     color: white;
   }
+
+  #abort {
+    position: absolute;
+    width: 7rem;
+    left: calc((100% - 7rem) / 2);
+    bottom: 1rem;
+    background-color: transparent;
+    border-radius: 5px;
+    padding: 2px;
+    border: 1px solid gray;
+    font-family: "PT Sans", sans-serif;
+  }
 }

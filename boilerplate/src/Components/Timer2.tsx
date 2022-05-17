@@ -1,6 +1,6 @@
 import useTimer from "easytimer-react-hook";
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Analog from "../Pages/Analog";
 import { Link } from "react-router-dom";
 import * as styles from "./Header.module.scss";
@@ -32,9 +32,17 @@ export function Timer2() {
   function sub() {
     if (count > 0) setCount((prev) => count - 1);
   }
+
+  useEffect(() => {
+    if (startTimer === true) {
+      const section = document.getElementById("timerSection")!;
+      section.style.display = "none";
+    } else if (startTimer === false) {
+      const section = document.getElementById("timerSection")!;
+      section.style.display = "block";
+    }
+  }, [startTimer]);
   function startTimerFunction() {
-    const section = document.getElementById("timerSection")!;
-    section.style.display = "none";
     setStartTimer(() => true);
     timer.start({
       startValues:
@@ -115,6 +123,16 @@ export function Timer2() {
       ) : null}
       {startTimer && selectPage === "visuell" ? (
         <Visuell time={timer.getTimeValues()} />
+      ) : null}
+
+      {startTimer === true ? (
+        <button
+          id="abort"
+          className={styles.abort}
+          onClick={() => setStartTimer(false)}
+        >
+          ABORT TIMER
+        </button>
       ) : null}
     </section>
   );
