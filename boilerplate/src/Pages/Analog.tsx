@@ -16,13 +16,19 @@ type Props = {
 
 function Analog({ timeCounter }: Props) {
   const [min, setMin] = useState(Number);
+  const [sek, setSek] = useState(Number);
 
   let minDeg: number = 360 / 60;
   let minCalc: number = min * minDeg;
+  let sekCalc: number = sek * minDeg;
 
   useEffect(() => {
     setMin(timeCounter?.minutes);
   }, [timeCounter?.minutes]);
+
+  useEffect(() => {
+    setSek(timeCounter?.seconds);
+  }, [timeCounter?.seconds]);
 
   return (
     <div>
@@ -37,6 +43,9 @@ function Analog({ timeCounter }: Props) {
           viewBox="0 0 11 250"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          style={{
+            transform: `rotate(${sekCalc}deg)`,
+          }}
         >
           <path
             d="M6.00355 129.192C8.75704 129.192 10.9812 126.96 10.9713 124.206C10.9614 121.452 8.72123 119.22 5.96775 119.22C3.21426 119.22 0.990132 121.452 1.00002 124.206C1.00991 126.96 3.25006 129.192 6.00355 129.192Z"
