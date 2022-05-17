@@ -1,19 +1,18 @@
 import useTimer from "easytimer-react-hook";
-import * as React from "react";
 import { useState, useEffect } from "react";
 import Analog from "../Pages/Analog";
-import { Link } from "react-router-dom";
 import * as styles from "./Header.module.scss";
+import "./Timer.module.scss";
 import logoblack from "../Images/naviconblack.svg";
 import logowhite from "../Images/naviconwhite.svg";
 import Digital from "../Pages/Digital";
 import Visuell from "../Pages/Visuell";
 
-interface interfaceTimer {
-  startValues: number;
-  countdown: boolean;
-  target: number;
-}
+// interface interfaceTimer {
+//   startValues: number;
+//   countdown: boolean;
+//   target: number;
+// }
 export function Timer2() {
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [count, setCount] = useState(0);
@@ -40,7 +39,7 @@ export function Timer2() {
       section.style.display = "none";
     } else if (startTimer === false) {
       const section = document.getElementById("timerSection")!;
-      section.style.display = "block";
+      section.style.display = "flex";
     }
   }, [startTimer]);
 
@@ -84,51 +83,51 @@ export function Timer2() {
 
         {toggleDropdown ? (
           <section onClick={() => setToggleDropdown(false)}>
-            <img
+            {/* <img
               src={logowhite}
               alt="picture of logo"
               onClick={() => setToggleDropdown(!toggleDropdown)}
-            />
-            <h4
-              style={{ color: "white" }}
-              onClick={() => setSelectPage("analog")}
-            >
-              Analog timer
-            </h4>
-            <h4
-              style={{ color: "white" }}
-              onClick={() => setSelectPage("digital")}
-            >
-              Digital timer
-            </h4>
-            <h4
-              style={{ color: "white" }}
-              onClick={() => setSelectPage("visuell")}
-            >
-              Visuell timer
-            </h4>
+            /> */}
+            <h4 onClick={() => setSelectPage("analog")}>ANALOG TIMER</h4>
+            <h4 onClick={() => setSelectPage("digital")}>DIGITAL TIMER</h4>
+            <h4 onClick={() => setSelectPage("visuell")}>VISUELL TIMER</h4>
           </section>
         ) : null}
       </nav>
 
-      <section id="timerSection">
-        <h1 onClick={add}>▶︎</h1>
-        <h1> {count}</h1>
-        <h1 onClick={sub}>◀︎</h1>
+      <section id="timerSection" className="timerSection">
+        <section className="setTimerSection">
+          <h1 className="leftright" onClick={sub}>
+            ◀︎
+          </h1>
+          <section>
+            <h1 className="count"> {count}</h1>
+            <h2 className="minSub"> minutes</h2>
+          </section>
+          <h1 className="leftright" onClick={add}>
+            ▶︎
+          </h1>
+        </section>
 
-        {/* <Link to={selectPage}> */}
-        <button onClick={startTimerFunction}>starta här</button>
-        {/* </Link> */}
         <form>
-          <label htmlFor="fiveminbreak">5 min break</label>
-          <input
-            type="checkbox"
-            onClick={pauseFiveMin}
-            id="fiveminbreak"
-          ></input>
-          <label htmlFor="interval">Interval</label>
-          <input type="checkbox" id="interval" onClick={intervalTimer}></input>
+          <article>
+            <label htmlFor="fiveminbreak">5 min break / interval</label>
+            <input
+              type="checkbox"
+              onClick={pauseFiveMin}
+              id="fiveminbreak"
+            ></input>
+          </article>
+          <article>
+            <label htmlFor="interval">interval</label>
+            <input
+              type="checkbox"
+              id="interval"
+              onClick={intervalTimer}
+            ></input>
+          </article>
         </form>
+        <button onClick={startTimerFunction}>START TIMER</button>
       </section>
 
       {startTimer && selectPage === "analog" ? (
@@ -144,7 +143,7 @@ export function Timer2() {
       ) : null}
 
       {startTimer === true ? (
-        <button id="abort" className={styles.abort} onClick={abortTimer}>
+        <button className="abort" onClick={abortTimer}>
           ABORT TIMER
         </button>
       ) : null}

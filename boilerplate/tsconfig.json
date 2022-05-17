@@ -10,7 +10,9 @@
     "target": "es5",
     "typeRoots": ["node_modules/@types"],
     "allowJs": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*"],
+  "includePaths": ["node_modules"]
 }

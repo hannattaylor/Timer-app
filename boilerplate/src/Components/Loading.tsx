@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import logo from "../Images/poster.png";
+import startLogo from "../Images/start.svg";
 import { Timer2 } from "./Timer2";
+import "./Loading.module.scss";
 
 function Loading() {
   const [startApp, setStartApp] = useState(false);
@@ -11,8 +11,11 @@ function Loading() {
   return (
     <section>
       {!startApp ? (
-        <img src={logo} alt="picture of logo" onClick={Start} />
+        <section className="wrap">
+          <img src={startLogo} alt="picture of logo" onClick={Start} />
+        </section>
       ) : null}
+
       {startApp ? <Timer2 /> : null}
     </section>
   );

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import analogClock from "../Images/clock1.svg";
-import styles from "./Analog.module.scss";
+import * as styles from "./Analog.module.scss";
 
 interface timeObj {
   days: number;
@@ -26,7 +26,6 @@ function Analog({ timeCounter }: Props) {
 
   return (
     <div>
-      Analog --- {timeCounter?.toString()}
       <section id="clockSection" className={styles.clockSection}>
         <img id="clock" className={styles.clock} src={analogClock} alt="" />
 
@@ -63,7 +62,7 @@ function Analog({ timeCounter }: Props) {
         >
           <path
             id="minHand"
-            className={styles.minHand}
+            // className={styles.minHand}
             transform="rotate(6deg)"
             d="M9.01427 131.172C13.4246 131.172 16.987 127.596 16.9711 123.186C16.9553 118.776 13.3672 115.2 8.95692 115.2C4.54663 115.2 0.984212 118.776 1.00005 123.186C1.01588 127.596 4.60397 131.172 9.01427 131.172Z"
             fill="black"

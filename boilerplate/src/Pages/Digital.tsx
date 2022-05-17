@@ -1,14 +1,14 @@
 import ResetBtn from "../Components/ResetBtn";
-import styles from "./Digital.module.scss";
+import "./Digital.module.scss";
 
 type Props = {
   timeCounter: string;
 };
 function Digital({ timeCounter }: Props) {
   return (
-    <div className={styles.section} id="section">
-      {timeCounter}
-    </div>
+    <section className="digital">
+      <h1>{timeCounter}</h1>
+    </section>
   );
 }
 
