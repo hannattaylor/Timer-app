@@ -62,7 +62,7 @@ export function Timer2() {
   }
 
   if (!timer.isRunning() && pause === true && startTimer === true) {
-    setTimeout(startTimerFunction, 50000);
+    setTimeout(startTimerFunction, 5000);
   }
   if (!timer.isRunning() && interval === true && startTimer === true) {
     setTimeout(startTimerFunction, 1000);
@@ -139,7 +139,7 @@ export function Timer2() {
         />
       ) : null}
       {startTimer && selectPage === "visuell" ? (
-        <Visuell time={timer.getTimeValues()} />
+        <Visuell time={timer.getTimeValues()} pauseState={pause} />
       ) : null}
 
       {startTimer === true ? (
