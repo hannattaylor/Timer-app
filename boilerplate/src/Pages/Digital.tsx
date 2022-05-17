@@ -1,10 +1,15 @@
-type Props = {
-  time: string;
-};
-function Digital({ time }: Props) {
-  console.log(time);
+import ResetBtn from "../Components/ResetBtn";
+import styles from "./Digital.module.scss";
 
-  return <div>Analog --- {time}</div>;
+type Props = {
+  timeCounter: string;
+};
+function Digital({ timeCounter }: Props) {
+  return (
+    <div className={styles.section} id="section">
+      {timeCounter}
+    </div>
+  );
 }
 
 export default Digital;

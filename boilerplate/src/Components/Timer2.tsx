@@ -109,7 +109,9 @@ export function Timer2() {
         <Analog timeCounter={timer.getTimeValues()} />
       ) : null}
       {startTimer && selectPage === "digital" ? (
-        <Digital time={timer.getTimeValues().toString()} />
+        <Digital
+          timeCounter={timer.getTimeValues().toString(["minutes", "seconds"])}
+        />
       ) : null}
       {startTimer && selectPage === "visuell" ? (
         <Visuell time={timer.getTimeValues()} />
