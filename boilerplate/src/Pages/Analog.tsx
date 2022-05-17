@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import analogClock from "../Images/clock1.svg";
 import styles from "./Analog.module.scss";
 
@@ -16,7 +16,6 @@ type Props = {
 
 function Analog({ timeCounter }: Props) {
   const [min, setMin] = useState(Number);
-  console.log(timeCounter?.minutes);
 
   let minDeg: number = 360 / 60;
   let minCalc: number = min * minDeg;

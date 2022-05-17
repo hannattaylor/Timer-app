@@ -33,6 +33,7 @@ export function Timer2() {
     if (count > 0) setCount((prev) => count - 1);
   }
 
+  //Tar bort setTimer sektionen när timern är true/startad och vise versa
   useEffect(() => {
     if (startTimer === true) {
       const section = document.getElementById("timerSection")!;
@@ -42,6 +43,7 @@ export function Timer2() {
       section.style.display = "block";
     }
   }, [startTimer]);
+
   function startTimerFunction() {
     setStartTimer(() => true);
     timer.start({
@@ -52,6 +54,12 @@ export function Timer2() {
         },
       countdown: true,
     });
+  }
+
+  function abortTimer() {
+    timer.stop();
+    setStartTimer(() => false);
+    setCount(0);
   }
 
   if (!timer.isRunning() && pause === true && startTimer === true) {
@@ -81,15 +89,24 @@ export function Timer2() {
               alt="picture of logo"
               onClick={() => setToggleDropdown(!toggleDropdown)}
             />
-            <Link to="/analog" onClick={() => setSelectPage("analog")}>
+            <h4
+              style={{ color: "white" }}
+              onClick={() => setSelectPage("analog")}
+            >
               Analog timer
-            </Link>
-            <Link to="/digital" onClick={() => setSelectPage("digital")}>
+            </h4>
+            <h4
+              style={{ color: "white" }}
+              onClick={() => setSelectPage("digital")}
+            >
               Digital timer
-            </Link>
-            <Link to="/visuell" onClick={() => setSelectPage("visuell")}>
+            </h4>
+            <h4
+              style={{ color: "white" }}
+              onClick={() => setSelectPage("visuell")}
+            >
               Visuell timer
-            </Link>
+            </h4>
           </section>
         ) : null}
       </nav>
@@ -99,9 +116,9 @@ export function Timer2() {
         <h1> {count}</h1>
         <h1 onClick={sub}>◀︎</h1>
 
-        <Link to={selectPage}>
-          <button onClick={startTimerFunction}>starta här</button>
-        </Link>
+        {/* <Link to={selectPage}> */}
+        <button onClick={startTimerFunction}>starta här</button>
+        {/* </Link> */}
         <form>
           <label htmlFor="fiveminbreak">5 min break</label>
           <input
@@ -113,6 +130,7 @@ export function Timer2() {
           <input type="checkbox" id="interval" onClick={intervalTimer}></input>
         </form>
       </section>
+
       {startTimer && selectPage === "analog" ? (
         <Analog timeCounter={timer.getTimeValues()} />
       ) : null}
@@ -126,11 +144,7 @@ export function Timer2() {
       ) : null}
 
       {startTimer === true ? (
-        <button
-          id="abort"
-          className={styles.abort}
-          onClick={() => setStartTimer(false)}
-        >
+        <button id="abort" className={styles.abort} onClick={abortTimer}>
           ABORT TIMER
         </button>
       ) : null}
