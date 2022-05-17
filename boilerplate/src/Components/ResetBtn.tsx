@@ -8,9 +8,9 @@ type Props = {
 function ResetBtn({ reset }: Props) {
   return (
     <section>
-      <Link to="/">
-        <button onClick={reset}> Starta om här</button>
-      </Link>
+      {/* <Link to="/"> */}
+      <button onClick={reset}> Starta om här</button>
+      {/* </Link> */}
     </section>
   );
 }

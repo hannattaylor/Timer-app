@@ -34,7 +34,7 @@ function Visuel({ time }: Props) {
           style={{ animation: `hourglass linear ${timerTime}s` }}
         ></article>
       ) : null}
-      <ResetBtn reset={resetTimer} />
+      {/* <ResetBtn reset={resetTimer} /> */}
     </section>
   );
 }

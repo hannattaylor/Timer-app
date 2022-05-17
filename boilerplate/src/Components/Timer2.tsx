@@ -89,15 +89,24 @@ export function Timer2() {
               alt="picture of logo"
               onClick={() => setToggleDropdown(!toggleDropdown)}
             />
-            <Link to="/analog" onClick={() => setSelectPage("analog")}>
+            <h4
+              style={{ color: "white" }}
+              onClick={() => setSelectPage("analog")}
+            >
               Analog timer
-            </Link>
-            <Link to="/digital" onClick={() => setSelectPage("digital")}>
+            </h4>
+            <h4
+              style={{ color: "white" }}
+              onClick={() => setSelectPage("digital")}
+            >
               Digital timer
-            </Link>
-            <Link to="/visuell" onClick={() => setSelectPage("visuell")}>
+            </h4>
+            <h4
+              style={{ color: "white" }}
+              onClick={() => setSelectPage("visuell")}
+            >
               Visuell timer
-            </Link>
+            </h4>
           </section>
         ) : null}
       </nav>
@@ -107,9 +116,9 @@ export function Timer2() {
         <h1> {count}</h1>
         <h1 onClick={sub}>◀︎</h1>
 
-        <Link to={selectPage}>
-          <button onClick={startTimerFunction}>starta här</button>
-        </Link>
+        {/* <Link to={selectPage}> */}
+        <button onClick={startTimerFunction}>starta här</button>
+        {/* </Link> */}
         <form>
           <label htmlFor="fiveminbreak">5 min break</label>
           <input
