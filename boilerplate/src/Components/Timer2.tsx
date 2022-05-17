@@ -33,6 +33,7 @@ export function Timer2() {
     if (count > 0) setCount((prev) => count - 1);
   }
 
+  //Tar bort setTimer sektionen när timern är true/startad och vise versa
   useEffect(() => {
     if (startTimer === true) {
       const section = document.getElementById("timerSection")!;
@@ -42,6 +43,7 @@ export function Timer2() {
       section.style.display = "block";
     }
   }, [startTimer]);
+
   function startTimerFunction() {
     setStartTimer(() => true);
     timer.start({
@@ -52,6 +54,12 @@ export function Timer2() {
         },
       countdown: true,
     });
+  }
+
+  function abortTimer() {
+    timer.stop();
+    setStartTimer(() => false);
+    setCount(0);
   }
 
   if (!timer.isRunning() && pause === true && startTimer === true) {
@@ -113,6 +121,7 @@ export function Timer2() {
           <input type="checkbox" id="interval" onClick={intervalTimer}></input>
         </form>
       </section>
+
       {startTimer && selectPage === "analog" ? (
         <Analog timeCounter={timer.getTimeValues()} />
       ) : null}
@@ -126,11 +135,7 @@ export function Timer2() {
       ) : null}
 
       {startTimer === true ? (
-        <button
-          id="abort"
-          className={styles.abort}
-          onClick={() => setStartTimer(false)}
-        >
+        <button id="abort" className={styles.abort} onClick={abortTimer}>
           ABORT TIMER
         </button>
       ) : null}
