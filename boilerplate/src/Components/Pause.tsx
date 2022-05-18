@@ -8,32 +8,31 @@ function Pause() {
   const [timer, isTargetAchieved] = useTimer({});
   const [pause, setPause] = useState(false);
 
-  timer.start({
-    startValues: {
-      minutes: 5,
-    },
-    countdown: true,
-  });
+  //Starta timer-funktionen vid första rendering av komponent
+  useEffect(() => {
+    timer.start({
+      startValues: {
+        minutes: 5,
+      },
+      countdown: true,
+    });
+  }, []);
 
-  function togglePause() {
-    setPause(() => !pause);
-    console.log(pause);
-
-    test();
-  }
-  function test() {
-    if (pause === true) {
+  //Pausa/starta paus-timern
+  useEffect(() => {
+    if (pause) {
       timer.pause();
-    } else if (pause === false) {
+    }
+    if (!pause) {
       timer.start();
     }
-  }
+  }, [pause]);
 
   return (
     <section className="pause">
       <img
         className="pauselogo"
-        onClick={togglePause}
+        onClick={() => setPause(!pause)}
         src={pause ? play : pauselogo}
         alt=""
       />
