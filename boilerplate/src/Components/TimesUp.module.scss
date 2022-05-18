@@ -1,0 +1,25 @@
+.section {
+  position: absolute;
+  top: 0;
+  z-index: 1000;
+  background-color: black;
+  width: 100vw;
+  height: 100vh;
+  background-image: url("../Images/circle_background.svg");
+  background-position: center;
+  background-size: 150%;
+  text-align: center;
+  .alarmBell {
+    position: relative;
+    margin: 0;
+    height: 6rem;
+    top: calc((100vh - 95px) / 2);
+  }
+  .timesUp {
+    margin-top: 3rem;
+    font-size: 2.5rem;
+    color: white;
+    position: relative;
+    top: 40%;
+  }
+}
