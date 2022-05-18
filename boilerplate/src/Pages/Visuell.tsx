@@ -21,12 +21,28 @@ function Visuel({ time, pauseState }: Props) {
     setTimerTime(() => time?.minutes * 60);
   }, [time]);
 
+  if (
+    time?.seconds === 0 &&
+    time?.minutes < 1 &&
+    document.getElementById("animation")
+  ) {
+    const animation = document.getElementById("animation")!;
+    animation.style.animation = "none";
+  } else if (
+    time?.seconds !== 0 &&
+    time?.minutes! < 1 &&
+    document.getElementById("animation")
+  ) {
+    const animation = document.getElementById("animation")!;
+    animation.style.animation = `hourglass linear ${timerTime}s`;
+  }
+
   return (
     <section className="visuell">
       <article
-        className="animation"
-        //har problem med att animationen inte startar om när pausen är slut, jar testat med infinite i animationen men få verkar allt hamna i osynk...
-        style={{ animation: `hourglass linear ${timerTime}s infinite` }}
+        className={time?.seconds === 0 && time?.minutes < 1 ? "" : "animation"}
+        id="animation"
+        style={{ animation: `hourglass linear ${timerTime}s` }}
       ></article>
 
       {pauseState === true && time?.seconds === 0 && time?.minutes < 1 ? (

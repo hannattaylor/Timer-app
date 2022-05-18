@@ -131,11 +131,13 @@ export function Timer2() {
       </section>
 
       {startTimer && selectPage === "analog" ? (
-        <Analog timeCounter={timer.getTimeValues()} />
+        <Analog timeCounter={timer.getTimeValues()} pauseState={pause} />
       ) : null}
       {startTimer && selectPage === "digital" ? (
         <Digital
           timeCounter={timer.getTimeValues().toString(["minutes", "seconds"])}
+          pauseState={pause}
+          time={timer.getTimeValues()}
         />
       ) : null}
       {startTimer && selectPage === "visuell" ? (

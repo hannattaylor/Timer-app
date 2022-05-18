@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Pause from "../Components/Pause";
 import analogClock from "../Images/clock1.svg";
 import * as styles from "./Analog.module.scss";
 
@@ -12,9 +13,10 @@ interface timeObj {
 
 type Props = {
   timeCounter: timeObj;
+  pauseState: boolean;
 };
 
-function Analog({ timeCounter }: Props) {
+function Analog({ timeCounter, pauseState }: Props) {
   const [min, setMin] = useState(Number);
   const [sek, setSek] = useState(Number);
 
@@ -82,6 +84,7 @@ function Analog({ timeCounter }: Props) {
           />
         </svg>
       </section>
+      {pauseState === true && sek === 0 && min < 1 ? <Pause /> : null}
     </div>
   );
 }
