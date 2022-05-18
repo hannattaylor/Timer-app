@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Pause from "../Components/Pause";
 import TimesUp from "../Components/TimesUp";
-import analogClock from "../Images/clock1.svg";
+import analogClock from "../Images/clock3.svg";
 import * as styles from "./Analog.module.scss";
 import timeObj from "../Components/Interface";
 
@@ -75,7 +75,7 @@ function Analog({ timeCounter, pauseState, interval }: Props) {
             d="M10.5716 1.99638C10.5676 0.893809 9.67059 -2.19267e-08 8.56801 -1.41255e-08C7.46544 -6.32418e-09 6.57483 0.893809 6.57879 1.99638L7.01407 123.226C7.01803 124.328 7.91506 125.222 9.01763 125.222C10.1202 125.222 11.0108 124.328 11.0069 123.226L10.5716 1.99638Z"
             fill="black"
           />
-        </svg>{" "}
+        </svg>
         {pauseState === false &&
         interval === false &&
         timeCounter?.seconds === 0 &&
