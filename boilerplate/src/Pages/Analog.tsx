@@ -83,7 +83,9 @@ function Analog({ timeCounter, pauseState, interval }: Props) {
           <TimesUp />
         ) : null}
       </section>
-      {pauseState === true && sek === 0 && min < 1 ? <Pause /> : null}
+      {/* {pauseState === true && sek === 0 && min < 1 ? (
+        <Pause pauseState={pauseState} />
+      ) : null} */}
     </div>
   );
 }

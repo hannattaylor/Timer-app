@@ -4,9 +4,13 @@ import play from "../Images/play.png";
 import pauselogo from "../Images/pause.svg";
 import { useEffect, useState } from "react";
 
-function Pause() {
+type Props = {
+  pauseState: boolean;
+};
+
+function Pause({ pauseState }: Props) {
   const [timer, isTargetAchieved] = useTimer({});
-  const [pause, setPause] = useState(false);
+  const [pause, setPause] = useState(pauseState);
 
   //Starta timer-funktionen vid första rendering av komponent
   useEffect(() => {
@@ -21,23 +25,30 @@ function Pause() {
   //Pausa/starta paus-timern
   useEffect(() => {
     if (pause) {
-      timer.pause();
-    }
-    if (!pause) {
       timer.start();
     }
+    if (!pause) {
+      timer.pause();
+    }
   }, [pause]);
+
+  function goOn() {
+    pauseState === false;
+  }
 
   return (
     <section className="pause">
       <img
         className="pauselogo"
-        onClick={() => setPause(!pause)}
-        src={pause ? play : pauselogo}
+        // onClick={() => setPause(!pause)}
+        // src={!pause ? play : pauselogo}
+        src={pauselogo}
         alt=""
       />
-      <h1>{!pause ? "Pause and breath" : "Go"}</h1>
-      <p>{timer?.getTimeValues().toString()}</p>
+      <h1>{pause ? "Pause & breathe" : "Continue pause"}</h1>
+      <p className="pauseTime">
+        {timer?.getTimeValues().toString(["minutes", "seconds"])}
+      </p>
     </section>
   );
 }

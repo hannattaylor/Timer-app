@@ -7,6 +7,7 @@ import logoblack from "../Images/naviconblack.svg";
 import logowhite from "../Images/naviconwhite.svg";
 import Digital from "../Pages/Digital";
 import Visuell from "../Pages/Visuell";
+import Pause from "./Pause";
 
 export function Timer2() {
   const [toggleDropdown, setToggleDropdown] = useState(false);
@@ -41,10 +42,11 @@ export function Timer2() {
   function startTimerFunction() {
     setStartTimer(() => true);
     timer.start({
-      startValues: [0, 2, 0, 0, 0],
-      // {
-      //   minutes: count,
-      // },
+      startValues:
+        //  [0, 2, 0, 0, 0],
+        {
+          minutes: count,
+        },
       countdown: true,
     });
   }
@@ -55,11 +57,23 @@ export function Timer2() {
     setCount(0);
   }
 
-  if (!timer.isRunning() && pause === true && startTimer === true) {
-    setTimeout(startTimerFunction, 5000);
+  if (
+    (!timer.isRunning() && pause && startTimer) ||
+    (!timer.isRunning() && pause && interval === true && startTimer) //försöker få det att funka så att man kan trycka i båda
+  ) {
+    setTimeout(startTimerFunction, 50000);
   }
-  if (!timer.isRunning() && interval === true && startTimer === true) {
+  if (
+    !timer.isRunning() &&
+    interval === true &&
+    !pause &&
+    startTimer === true
+  ) {
     setTimeout(startTimerFunction, 1000);
+  }
+
+  function goOn() {
+    startTimerFunction();
   }
 
   return (
@@ -77,11 +91,6 @@ export function Timer2() {
 
         {toggleDropdown ? (
           <section onClick={() => setToggleDropdown(false)}>
-            {/* <img
-              src={logowhite}
-              alt="picture of logo"
-              onClick={() => setToggleDropdown(!toggleDropdown)}
-            /> */}
             <h4 onClick={() => setSelectPage("analog")}>ANALOG TIMER</h4>
             <h4 onClick={() => setSelectPage("digital")}>DIGITAL TIMER</h4>
             <h4 onClick={() => setSelectPage("visuell")}>VISUELL TIMER</h4>
@@ -147,11 +156,29 @@ export function Timer2() {
         />
       ) : null}
 
-      {startTimer === true ? (
+      {(pause &&
+        startTimer &&
+        timer.getTimeValues().seconds === 0 &&
+        timer.getTimeValues().minutes < 1) ||
+      (pause &&
+        interval &&
+        startTimer &&
+        timer.getTimeValues().seconds === 0 &&
+        timer.getTimeValues().minutes < 1) ? (
+        <section>
+          <Pause pauseState={pause} />
+          <button className="goOn" onClick={goOn}>
+            NO PAUSE, GO NOW!
+          </button>
+        </section>
+      ) : null}
+
+      {(startTimer && pause) || (startTimer && interval) || startTimer ? (
         <button className="abort" onClick={abortTimer}>
           ABORT TIMER
         </button>
       ) : null}
+
       {startTimer === true &&
       pause === false &&
       interval === false &&

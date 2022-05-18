@@ -7,15 +7,15 @@
   height: 100vh;
   background-image: url("../Images/circle_background.svg");
   background-position: center;
-  background-size: 150%;
+  background-size: 125%;
   text-align: center;
   color: white;
 
   .pauselogo {
     position: relative;
     margin: 0;
-    height: 6rem;
-    top: calc((100vh - 95px) / 2);
+    height: 3rem;
+    top: calc((100vh - 3rem) / 2);
   }
   img {
     filter: invert(100%);
@@ -25,6 +25,16 @@
     font-size: 2.5rem;
     color: white;
     position: relative;
-    top: 40%;
+    top: 45%;
   }
+}
+.goOn {
+  padding: 1rem;
+  position: absolute;
+  bottom: 2rem;
+}
+.pauseTime {
+  position: relative;
+  top: 40%;
+  color: gray;
 }

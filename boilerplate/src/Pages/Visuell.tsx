@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import Pause from "../Components/Pause";
+// import Pause from "../Components/Pause";
 import TimesUp from "../Components/TimesUp";
 import "./Visuell.module.scss";
 
@@ -47,9 +47,9 @@ function Visuel({ time, pauseState, interval }: Props) {
         style={{ animation: `hourglass linear ${timerTime}s` }}
       ></article>
       {/* //Redera Pausekomponent om sekunder och minuter === 0 */}
-      {pauseState === true && time?.seconds === 0 && time?.minutes < 1 ? (
+      {/* {pauseState === true && time?.seconds === 0 && time?.minutes < 1 ? (
         <Pause />
-      ) : null}
+      ) : null} */}
       {pauseState === false &&
       interval === false &&
       time?.seconds === 0 &&

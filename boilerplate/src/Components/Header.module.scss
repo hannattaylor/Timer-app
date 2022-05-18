@@ -40,7 +40,8 @@
   }
 
   .abort,
-  .setNew {
+  .setNew,
+  .goOn {
     position: absolute;
     width: 7rem;
     left: calc((100% - 7rem) / 2);
@@ -50,9 +51,15 @@
     padding: 5px 7px;
     border: 1px solid gray;
     font-family: "PT Sans", sans-serif;
-    z-index: 100000;
   }
   .setNew {
     color: gray;
+    z-index: 1000;
+  }
+  .goOn {
+    width: 10rem;
+    color: gray;
+    left: calc((100% - 10rem) / 2);
+    z-index: 1000;
   }
 }

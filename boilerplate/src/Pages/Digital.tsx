@@ -16,9 +16,9 @@ function Digital({ timeCounter, pauseState, time, interval }: Props) {
   return (
     <section className="digital">
       <h1>{timeCounter}</h1>
-      {pauseState === true && time?.seconds === 0 && time?.minutes < 1 ? (
+      {/* {pauseState === true && time?.seconds === 0 && time?.minutes < 1 ? (
         <Pause />
-      ) : null}
+      ) : null} */}
       {pauseState === false &&
       interval === false &&
       time?.seconds === 0 &&
