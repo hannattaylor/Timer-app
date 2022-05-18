@@ -2,14 +2,7 @@ import { useEffect, useState } from "react";
 import Pause from "../Components/Pause";
 import analogClock from "../Images/clock1.svg";
 import * as styles from "./Analog.module.scss";
-
-interface timeObj {
-  days: number;
-  hours: number;
-  minutes: number;
-  seconds: number;
-  secondTenths: number;
-}
+import timeObj from "../Components/Interface";
 
 type Props = {
   timeCounter: timeObj;

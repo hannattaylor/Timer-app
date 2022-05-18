@@ -8,11 +8,6 @@ import logowhite from "../Images/naviconwhite.svg";
 import Digital from "../Pages/Digital";
 import Visuell from "../Pages/Visuell";
 
-// interface interfaceTimer {
-//   startValues: number;
-//   countdown: boolean;
-//   target: number;
-// }
 export function Timer2() {
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [count, setCount] = useState(0);

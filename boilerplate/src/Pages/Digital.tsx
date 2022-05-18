@@ -1,14 +1,7 @@
 import Pause from "../Components/Pause";
-import ResetBtn from "../Components/ResetBtn";
 import "./Digital.module.scss";
+import timeObj from "../Components/Interface";
 
-interface timeObj {
-  days: number;
-  hours: number;
-  minutes: number;
-  seconds: number;
-  secondTenths: number;
-}
 type Props = {
   timeCounter: string;
   pauseState: boolean;
