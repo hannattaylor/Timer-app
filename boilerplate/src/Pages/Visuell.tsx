@@ -14,13 +14,13 @@ type Props = {
 //Funktion som tar emot vald tid via props från "Timer"
 function Visuel({ time, pauseState }: Props) {
   const [timerTime, setTimerTime] = useState(0);
-  console.log(time.seconds);
 
   //Sätt tiden när komponenten laddas in
   useEffect(() => {
     setTimerTime(() => time?.minutes * 60);
   }, [time]);
 
+  //Tar bort/lägger till animationen beroende på sekund/minut
   if (
     time?.seconds === 0 &&
     time?.minutes < 1 &&
@@ -44,7 +44,7 @@ function Visuel({ time, pauseState }: Props) {
         id="animation"
         style={{ animation: `hourglass linear ${timerTime}s` }}
       ></article>
-
+      {/* //Redera Pausekomponent om sekunder och minuter === 0 */}
       {pauseState === true && time?.seconds === 0 && time?.minutes < 1 ? (
         <Pause />
       ) : null}
