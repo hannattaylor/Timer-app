@@ -39,15 +39,20 @@
     color: white;
   }
 
-  .abort {
+  .abort,
+  .setNew {
     position: absolute;
     width: 7rem;
     left: calc((100% - 7rem) / 2);
-    bottom: 1rem;
+    bottom: 2rem;
     background-color: transparent;
     border-radius: 5px;
     padding: 2px;
     border: 1px solid gray;
     font-family: "PT Sans", sans-serif;
+    z-index: 100000;
+  }
+  .setNew {
+    color: gray;
   }
 }

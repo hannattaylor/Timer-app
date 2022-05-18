@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import Pause from "../Components/Pause";
+import TimesUp from "../Components/TimesUp";
 import "./Visuell.module.scss";
 
 type Props = {
@@ -9,10 +10,11 @@ type Props = {
     minutes: number;
   };
   pauseState: boolean;
+  interval: boolean;
 };
 
 //Funktion som tar emot vald tid via props från "Timer"
-function Visuel({ time, pauseState }: Props) {
+function Visuel({ time, pauseState, interval }: Props) {
   const [timerTime, setTimerTime] = useState(0);
   console.log(time.seconds);
 
@@ -47,6 +49,12 @@ function Visuel({ time, pauseState }: Props) {
 
       {pauseState === true && time?.seconds === 0 && time?.minutes < 1 ? (
         <Pause />
+      ) : null}
+      {pauseState === false &&
+      interval === false &&
+      time?.seconds === 0 &&
+      time?.minutes < 1 ? (
+        <TimesUp />
       ) : null}
     </section>
   );

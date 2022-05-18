@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Pause from "../Components/Pause";
+import TimesUp from "../Components/TimesUp";
 import analogClock from "../Images/clock1.svg";
 import * as styles from "./Analog.module.scss";
 
@@ -14,9 +15,10 @@ interface timeObj {
 type Props = {
   timeCounter: timeObj;
   pauseState: boolean;
+  interval: boolean;
 };
 
-function Analog({ timeCounter, pauseState }: Props) {
+function Analog({ timeCounter, pauseState, interval }: Props) {
   const [min, setMin] = useState(Number);
   const [sek, setSek] = useState(Number);
 
@@ -36,7 +38,6 @@ function Analog({ timeCounter, pauseState }: Props) {
     <div>
       <section id="clockSection" className={styles.clockSection}>
         <img id="clock" className={styles.clock} src={analogClock} alt="" />
-
         <svg
           id="sek"
           className={styles.sek}
@@ -58,7 +59,6 @@ function Analog({ timeCounter, pauseState }: Props) {
             fill="#555555"
           />
         </svg>
-
         <svg
           id="min"
           className={styles.min}
@@ -82,7 +82,13 @@ function Analog({ timeCounter, pauseState }: Props) {
             d="M10.5716 1.99638C10.5676 0.893809 9.67059 -2.19267e-08 8.56801 -1.41255e-08C7.46544 -6.32418e-09 6.57483 0.893809 6.57879 1.99638L7.01407 123.226C7.01803 124.328 7.91506 125.222 9.01763 125.222C10.1202 125.222 11.0108 124.328 11.0069 123.226L10.5716 1.99638Z"
             fill="black"
           />
-        </svg>
+        </svg>{" "}
+        {pauseState === false &&
+        interval === false &&
+        timeCounter?.seconds === 0 &&
+        timeCounter?.minutes < 1 ? (
+          <TimesUp />
+        ) : null}
       </section>
       {pauseState === true && sek === 0 && min < 1 ? <Pause /> : null}
     </div>

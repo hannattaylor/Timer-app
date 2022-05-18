@@ -73,7 +73,7 @@ export function Timer2() {
       <nav className={styles.nav}>
         <img
           src={
-            toggleDropdown || selectPage === "visuell"
+            toggleDropdown || (selectPage === "visuell" && startTimer === true)
               ? `${logowhite}`
               : `${logoblack}`
           }
@@ -131,22 +131,40 @@ export function Timer2() {
       </section>
 
       {startTimer && selectPage === "analog" ? (
-        <Analog timeCounter={timer.getTimeValues()} pauseState={pause} />
+        <Analog
+          interval={interval}
+          timeCounter={timer.getTimeValues()}
+          pauseState={pause}
+        />
       ) : null}
       {startTimer && selectPage === "digital" ? (
         <Digital
           timeCounter={timer.getTimeValues().toString(["minutes", "seconds"])}
           pauseState={pause}
+          interval={interval}
           time={timer.getTimeValues()}
         />
       ) : null}
       {startTimer && selectPage === "visuell" ? (
-        <Visuell time={timer.getTimeValues()} pauseState={pause} />
+        <Visuell
+          interval={interval}
+          time={timer.getTimeValues()}
+          pauseState={pause}
+        />
       ) : null}
 
       {startTimer === true ? (
         <button className="abort" onClick={abortTimer}>
           ABORT TIMER
+        </button>
+      ) : null}
+      {startTimer === true &&
+      pause === false &&
+      interval === false &&
+      timer.getTimeValues().seconds === 0 &&
+      timer.getTimeValues().minutes < 1 ? (
+        <button className="setNew" onClick={abortTimer}>
+          SET NEW TIMER
         </button>
       ) : null}
     </section>
