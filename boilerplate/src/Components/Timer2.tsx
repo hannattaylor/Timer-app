@@ -43,7 +43,7 @@ export function Timer2() {
     setStartTimer(() => true);
     timer.start({
       startValues:
-        //  [0, 2, 0, 0, 0],
+        // [0, 10, 0, 0, 0],
         {
           minutes: count,
         },

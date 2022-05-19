@@ -11,8 +11,6 @@ type Props = {
   time: timeObj;
 };
 function Digital({ timeCounter, pauseState, time, interval }: Props) {
-  console.log(timeCounter);
-
   return (
     <section className="digital">
       <h1>{timeCounter}</h1>

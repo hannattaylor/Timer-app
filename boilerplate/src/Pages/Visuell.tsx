@@ -1,14 +1,11 @@
 import { useEffect } from "react";
 import { useState } from "react";
-// import Pause from "../Components/Pause";
 import TimesUp from "../Components/TimesUp";
 import "./Visuell.module.scss";
+import timeObj from "../Components/Interface";
 
 type Props = {
-  time: {
-    seconds: number;
-    minutes: number;
-  };
+  time: timeObj;
   pauseState: boolean;
   interval: boolean;
 };
@@ -17,9 +14,12 @@ type Props = {
 function Visuel({ time, pauseState, interval }: Props) {
   const [timerTime, setTimerTime] = useState(0);
 
-  //Sätt tiden när komponenten laddas in
+  //Sätt tiden för hur länge animationen ska köra
   useEffect(() => {
-    setTimerTime(() => time?.minutes * 60);
+    if (time?.minutes > 0) setTimerTime(() => time?.minutes * 60);
+    else {
+      setTimerTime(() => time?.seconds);
+    }
   }, [time]);
 
   //Tar bort/lägger till animationen beroende på sekund/minut
@@ -31,8 +31,8 @@ function Visuel({ time, pauseState, interval }: Props) {
     const animation = document.getElementById("animation")!;
     animation.style.animation = "none";
   } else if (
-    time?.seconds !== 0 &&
-    time?.minutes! < 1 &&
+    // time?.seconds > 0 &&
+    time?.minutes >= 1 &&
     document.getElementById("animation")
   ) {
     const animation = document.getElementById("animation")!;
@@ -46,10 +46,6 @@ function Visuel({ time, pauseState, interval }: Props) {
         id="animation"
         style={{ animation: `hourglass linear ${timerTime}s` }}
       ></article>
-      {/* //Redera Pausekomponent om sekunder och minuter === 0 */}
-      {/* {pauseState === true && time?.seconds === 0 && time?.minutes < 1 ? (
-        <Pause />
-      ) : null} */}
       {pauseState === false &&
       interval === false &&
       time?.seconds === 0 &&
