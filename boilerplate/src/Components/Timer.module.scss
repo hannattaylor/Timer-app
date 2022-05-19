@@ -1,0 +1,130 @@
+.timerSection {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  text-align: center;
+  align-items: center;
+  gap: 2rem;
+  .setTimerSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    section {
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      gap: 2px;
+      h1 {
+        margin: 0;
+        padding: 0;
+        font-size: 4rem;
+      }
+      h2 {
+        margin: 0;
+        padding: 0;
+        font-size: 1rem;
+        font-weight: 100;
+        color: gray;
+      }
+    }
+    .leftright {
+      font-size: 2.5rem;
+    }
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    font-size: 1.2rem;
+    font-weight: 100;
+    article {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      gap: 0.5rem;
+      input[type="checkbox"] {
+        background-color: transparent;
+        border: 2px solid black;
+      }
+    }
+  }
+  button {
+    width: 60%;
+    background-color: transparent;
+    border: 1.5px solid black;
+    border-radius: 2px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    padding: 0.3rem 1rem;
+    letter-spacing: 2px;
+    margin-bottom: 20%;
+  }
+}
+@media only screen and (max-width: 990px) {
+  nav {
+    position: absolute;
+    background-color: transparent;
+    font-family: "PT Sans", sans-serif;
+    width: 100%;
+    align-items: center;
+    z-index: 999;
+
+    section {
+      position: absolute;
+      top: 0;
+      padding-top: 10rem;
+      width: 100%;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.918);
+      display: flex;
+      flex-direction: column;
+      place-items: center;
+      justify-content: start;
+
+      a {
+        padding: 1rem;
+        color: rgb(92, 21, 21);
+        text-decoration: none;
+      }
+      h4 {
+        color: white;
+        font-size: 1.4rem;
+      }
+    }
+  }
+  img {
+    height: 3rem;
+    margin: 1rem;
+  }
+
+  a {
+    color: white;
+  }
+
+  .abort,
+  .setNew,
+  .goOn {
+    position: absolute;
+    width: 7rem;
+    left: calc((100% - 7rem) / 2);
+    bottom: 2rem;
+    background-color: transparent;
+    border-radius: 5px;
+    padding: 5px 7px;
+    border: 1px solid gray;
+    font-family: "PT Sans", sans-serif;
+  }
+  .setNew {
+    color: gray;
+    z-index: 1000;
+  }
+  .goOn {
+    width: 10rem;
+    color: gray;
+    left: calc((100% - 10rem) / 2);
+    z-index: 1000;
+  }
+}

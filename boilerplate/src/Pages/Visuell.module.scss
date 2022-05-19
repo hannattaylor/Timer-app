@@ -1,0 +1,20 @@
+.visuell {
+  background-color: rgb(11, 11, 12);
+  height: 100vh;
+  #animation {
+    background-color: #eeeeee;
+    width: 98%;
+    height: 0vh;
+    position: absolute;
+    bottom: -2vh;
+  }
+}
+
+@keyframes hourglass {
+  0% {
+    height: 90vh;
+  }
+  100% {
+    height: 0vh;
+  }
+}
