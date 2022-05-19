@@ -30,11 +30,7 @@ function Visuel({ time, pauseState, interval }: Props) {
   ) {
     const animation = document.getElementById("animation")!;
     animation.style.animation = "none";
-  } else if (
-    // time?.seconds > 0 &&
-    time?.minutes >= 1 &&
-    document.getElementById("animation")
-  ) {
+  } else if (time?.minutes >= 1 && document.getElementById("animation")) {
     const animation = document.getElementById("animation")!;
     animation.style.animation = `hourglass linear ${timerTime}s`;
   }

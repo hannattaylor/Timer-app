@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Pause from "../Components/Pause";
 import TimesUp from "../Components/TimesUp";
 import analogClock from "../Images/clock3.svg";
 import * as styles from "./Analog.module.scss";
@@ -66,7 +65,6 @@ function Analog({ timeCounter, pauseState, interval }: Props) {
         >
           <path
             id="minHand"
-            // className={styles.minHand}
             transform="rotate(6deg)"
             d="M9.01427 131.172C13.4246 131.172 16.987 127.596 16.9711 123.186C16.9553 118.776 13.3672 115.2 8.95692 115.2C4.54663 115.2 0.984212 118.776 1.00005 123.186C1.01588 127.596 4.60397 131.172 9.01427 131.172Z"
             fill="black"
@@ -83,9 +81,6 @@ function Analog({ timeCounter, pauseState, interval }: Props) {
           <TimesUp />
         ) : null}
       </section>
-      {/* {pauseState === true && sek === 0 && min < 1 ? (
-        <Pause pauseState={pauseState} />
-      ) : null} */}
     </div>
   );
 }

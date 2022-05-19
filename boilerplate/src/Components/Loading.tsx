@@ -1,6 +1,6 @@
 import { useState } from "react";
 import startLogo from "../Images/start.svg";
-import { Timer2 } from "./Timer2";
+import { Timer } from "./Timer";
 import "./Loading.module.scss";
 
 function Loading() {
@@ -16,7 +16,7 @@ function Loading() {
         </section>
       ) : null}
 
-      {startApp ? <Timer2 /> : null}
+      {startApp ? <Timer /> : null}
     </section>
   );
 }

@@ -1,7 +1,6 @@
 import useTimer from "easytimer-react-hook";
 import { useState, useEffect } from "react";
 import Analog from "../Pages/Analog";
-import * as styles from "./Header.module.scss";
 import "./Timer.module.scss";
 import logoblack from "../Images/naviconblack.svg";
 import logowhite from "../Images/naviconwhite.svg";
@@ -9,7 +8,7 @@ import Digital from "../Pages/Digital";
 import Visuell from "../Pages/Visuell";
 import Pause from "./Pause";
 
-export function Timer2() {
+export function Timer() {
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [count, setCount] = useState(0);
   const [interval, setInterval] = useState(false);
@@ -22,18 +21,18 @@ export function Timer2() {
   let intervalTimer = () => setInterval(() => !interval);
 
   function add() {
-    setCount((prev) => count + 1);
+    setCount(() => count + 1);
   }
   function sub() {
-    if (count > 0) setCount((prev) => count - 1);
+    if (count > 0) setCount(() => count - 1);
   }
 
   //Tar bort setTimer sektionen när timern är true/startad och vise versa
   useEffect(() => {
-    if (startTimer === true) {
+    if (startTimer) {
       const section = document.getElementById("timerSection")!;
       section.style.display = "none";
-    } else if (startTimer === false) {
+    } else if (!startTimer) {
       const section = document.getElementById("timerSection")!;
       section.style.display = "flex";
     }
@@ -42,11 +41,9 @@ export function Timer2() {
   function startTimerFunction() {
     setStartTimer(() => true);
     timer.start({
-      startValues:
-        // [0, 10, 0, 0, 0],
-        {
-          minutes: count,
-        },
+      startValues: {
+        minutes: count,
+      },
       countdown: true,
     });
   }
@@ -59,7 +56,7 @@ export function Timer2() {
 
   if (
     (!timer.isRunning() && pause && startTimer) ||
-    (!timer.isRunning() && pause && interval === true && startTimer) //försöker få det att funka så att man kan trycka i båda
+    (!timer.isRunning() && pause && interval === true && startTimer)
   ) {
     setTimeout(startTimerFunction, 50000);
   }
@@ -72,13 +69,9 @@ export function Timer2() {
     setTimeout(startTimerFunction, 1000);
   }
 
-  function goOn() {
-    startTimerFunction();
-  }
-
   return (
     <section>
-      <nav className={styles.nav}>
+      <nav className="nav">
         <img
           src={
             toggleDropdown || (selectPage === "visuell" && startTimer === true)
@@ -167,7 +160,7 @@ export function Timer2() {
         timer.getTimeValues().minutes < 1) ? (
         <section>
           <Pause pauseState={pause} />
-          <button className="goOn" onClick={goOn}>
+          <button className="goOn" onClick={() => startTimerFunction()}>
             NO PAUSE, GO NOW!
           </button>
         </section>
