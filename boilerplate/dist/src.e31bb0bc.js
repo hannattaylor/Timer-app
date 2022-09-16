@@ -32999,7 +32999,1301 @@ if ("development" === 'production') {
     }
   };
 }
-},{"react-dom":"../node_modules/react-dom/index.js"}],"../node_modules/easytimer.js/dist/easytimer.js":[function(require,module,exports) {
+},{"react-dom":"../node_modules/react-dom/index.js"}],"../node_modules/react/cjs/react-jsx-runtime.development.js":[function(require,module,exports) {
+/**
+ * @license React
+ * react-jsx-runtime.development.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+'use strict';
+
+if ("development" !== "production") {
+  (function () {
+    'use strict';
+
+    var React = require('react'); // -----------------------------------------------------------------------------
+
+
+    var enableScopeAPI = false; // Experimental Create Event Handle API.
+
+    var enableCacheElement = false;
+    var enableTransitionTracing = false; // No known bugs, but needs performance testing
+
+    var enableLegacyHidden = false; // Enables unstable_avoidThisFallback feature in Fiber
+    // stuff. Intended to enable React core members to more easily debug scheduling
+    // issues in DEV builds.
+
+    var enableDebugTracing = false; // Track which Fiber(s) schedule render work.
+    // ATTENTION
+
+    var REACT_ELEMENT_TYPE = Symbol.for('react.element');
+    var REACT_PORTAL_TYPE = Symbol.for('react.portal');
+    var REACT_FRAGMENT_TYPE = Symbol.for('react.fragment');
+    var REACT_STRICT_MODE_TYPE = Symbol.for('react.strict_mode');
+    var REACT_PROFILER_TYPE = Symbol.for('react.profiler');
+    var REACT_PROVIDER_TYPE = Symbol.for('react.provider');
+    var REACT_CONTEXT_TYPE = Symbol.for('react.context');
+    var REACT_FORWARD_REF_TYPE = Symbol.for('react.forward_ref');
+    var REACT_SUSPENSE_TYPE = Symbol.for('react.suspense');
+    var REACT_SUSPENSE_LIST_TYPE = Symbol.for('react.suspense_list');
+    var REACT_MEMO_TYPE = Symbol.for('react.memo');
+    var REACT_LAZY_TYPE = Symbol.for('react.lazy');
+    var REACT_OFFSCREEN_TYPE = Symbol.for('react.offscreen');
+    var MAYBE_ITERATOR_SYMBOL = Symbol.iterator;
+    var FAUX_ITERATOR_SYMBOL = '@@iterator';
+
+    function getIteratorFn(maybeIterable) {
+      if (maybeIterable === null || typeof maybeIterable !== 'object') {
+        return null;
+      }
+
+      var maybeIterator = MAYBE_ITERATOR_SYMBOL && maybeIterable[MAYBE_ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL];
+
+      if (typeof maybeIterator === 'function') {
+        return maybeIterator;
+      }
+
+      return null;
+    }
+
+    var ReactSharedInternals = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+
+    function error(format) {
+      {
+        {
+          for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+            args[_key2 - 1] = arguments[_key2];
+          }
+
+          printWarning('error', format, args);
+        }
+      }
+    }
+
+    function printWarning(level, format, args) {
+      // When changing this logic, you might want to also
+      // update consoleWithStackDev.www.js as well.
+      {
+        var ReactDebugCurrentFrame = ReactSharedInternals.ReactDebugCurrentFrame;
+        var stack = ReactDebugCurrentFrame.getStackAddendum();
+
+        if (stack !== '') {
+          format += '%s';
+          args = args.concat([stack]);
+        } // eslint-disable-next-line react-internal/safe-string-coercion
+
+
+        var argsWithFormat = args.map(function (item) {
+          return String(item);
+        }); // Careful: RN currently depends on this prefix
+
+        argsWithFormat.unshift('Warning: ' + format); // We intentionally don't use spread (or .apply) directly because it
+        // breaks IE9: https://github.com/facebook/react/issues/13610
+        // eslint-disable-next-line react-internal/no-production-logging
+
+        Function.prototype.apply.call(console[level], console, argsWithFormat);
+      }
+    }
+
+    var REACT_MODULE_REFERENCE;
+    {
+      REACT_MODULE_REFERENCE = Symbol.for('react.module.reference');
+    }
+
+    function isValidElementType(type) {
+      if (typeof type === 'string' || typeof type === 'function') {
+        return true;
+      } // Note: typeof might be other than 'symbol' or 'number' (e.g. if it's a polyfill).
+
+
+      if (type === REACT_FRAGMENT_TYPE || type === REACT_PROFILER_TYPE || enableDebugTracing || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || enableLegacyHidden || type === REACT_OFFSCREEN_TYPE || enableScopeAPI || enableCacheElement || enableTransitionTracing) {
+        return true;
+      }
+
+      if (typeof type === 'object' && type !== null) {
+        if (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || // This needs to include all possible module reference object
+        // types supported by any Flight configuration anywhere since
+        // we don't know which Flight build this will end up being used
+        // with.
+        type.$$typeof === REACT_MODULE_REFERENCE || type.getModuleId !== undefined) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    function getWrappedName(outerType, innerType, wrapperName) {
+      var displayName = outerType.displayName;
+
+      if (displayName) {
+        return displayName;
+      }
+
+      var functionName = innerType.displayName || innerType.name || '';
+      return functionName !== '' ? wrapperName + "(" + functionName + ")" : wrapperName;
+    } // Keep in sync with react-reconciler/getComponentNameFromFiber
+
+
+    function getContextName(type) {
+      return type.displayName || 'Context';
+    } // Note that the reconciler package should generally prefer to use getComponentNameFromFiber() instead.
+
+
+    function getComponentNameFromType(type) {
+      if (type == null) {
+        // Host root, text node or just invalid type.
+        return null;
+      }
+
+      {
+        if (typeof type.tag === 'number') {
+          error('Received an unexpected object in getComponentNameFromType(). ' + 'This is likely a bug in React. Please file an issue.');
+        }
+      }
+
+      if (typeof type === 'function') {
+        return type.displayName || type.name || null;
+      }
+
+      if (typeof type === 'string') {
+        return type;
+      }
+
+      switch (type) {
+        case REACT_FRAGMENT_TYPE:
+          return 'Fragment';
+
+        case REACT_PORTAL_TYPE:
+          return 'Portal';
+
+        case REACT_PROFILER_TYPE:
+          return 'Profiler';
+
+        case REACT_STRICT_MODE_TYPE:
+          return 'StrictMode';
+
+        case REACT_SUSPENSE_TYPE:
+          return 'Suspense';
+
+        case REACT_SUSPENSE_LIST_TYPE:
+          return 'SuspenseList';
+      }
+
+      if (typeof type === 'object') {
+        switch (type.$$typeof) {
+          case REACT_CONTEXT_TYPE:
+            var context = type;
+            return getContextName(context) + '.Consumer';
+
+          case REACT_PROVIDER_TYPE:
+            var provider = type;
+            return getContextName(provider._context) + '.Provider';
+
+          case REACT_FORWARD_REF_TYPE:
+            return getWrappedName(type, type.render, 'ForwardRef');
+
+          case REACT_MEMO_TYPE:
+            var outerName = type.displayName || null;
+
+            if (outerName !== null) {
+              return outerName;
+            }
+
+            return getComponentNameFromType(type.type) || 'Memo';
+
+          case REACT_LAZY_TYPE:
+            {
+              var lazyComponent = type;
+              var payload = lazyComponent._payload;
+              var init = lazyComponent._init;
+
+              try {
+                return getComponentNameFromType(init(payload));
+              } catch (x) {
+                return null;
+              }
+            }
+          // eslint-disable-next-line no-fallthrough
+        }
+      }
+
+      return null;
+    }
+
+    var assign = Object.assign; // Helpers to patch console.logs to avoid logging during side-effect free
+    // replaying on render function. This currently only patches the object
+    // lazily which won't cover if the log function was extracted eagerly.
+    // We could also eagerly patch the method.
+
+    var disabledDepth = 0;
+    var prevLog;
+    var prevInfo;
+    var prevWarn;
+    var prevError;
+    var prevGroup;
+    var prevGroupCollapsed;
+    var prevGroupEnd;
+
+    function disabledLog() {}
+
+    disabledLog.__reactDisabledLog = true;
+
+    function disableLogs() {
+      {
+        if (disabledDepth === 0) {
+          /* eslint-disable react-internal/no-production-logging */
+          prevLog = console.log;
+          prevInfo = console.info;
+          prevWarn = console.warn;
+          prevError = console.error;
+          prevGroup = console.group;
+          prevGroupCollapsed = console.groupCollapsed;
+          prevGroupEnd = console.groupEnd; // https://github.com/facebook/react/issues/19099
+
+          var props = {
+            configurable: true,
+            enumerable: true,
+            value: disabledLog,
+            writable: true
+          }; // $FlowFixMe Flow thinks console is immutable.
+
+          Object.defineProperties(console, {
+            info: props,
+            log: props,
+            warn: props,
+            error: props,
+            group: props,
+            groupCollapsed: props,
+            groupEnd: props
+          });
+          /* eslint-enable react-internal/no-production-logging */
+        }
+
+        disabledDepth++;
+      }
+    }
+
+    function reenableLogs() {
+      {
+        disabledDepth--;
+
+        if (disabledDepth === 0) {
+          /* eslint-disable react-internal/no-production-logging */
+          var props = {
+            configurable: true,
+            enumerable: true,
+            writable: true
+          }; // $FlowFixMe Flow thinks console is immutable.
+
+          Object.defineProperties(console, {
+            log: assign({}, props, {
+              value: prevLog
+            }),
+            info: assign({}, props, {
+              value: prevInfo
+            }),
+            warn: assign({}, props, {
+              value: prevWarn
+            }),
+            error: assign({}, props, {
+              value: prevError
+            }),
+            group: assign({}, props, {
+              value: prevGroup
+            }),
+            groupCollapsed: assign({}, props, {
+              value: prevGroupCollapsed
+            }),
+            groupEnd: assign({}, props, {
+              value: prevGroupEnd
+            })
+          });
+          /* eslint-enable react-internal/no-production-logging */
+        }
+
+        if (disabledDepth < 0) {
+          error('disabledDepth fell below zero. ' + 'This is a bug in React. Please file an issue.');
+        }
+      }
+    }
+
+    var ReactCurrentDispatcher = ReactSharedInternals.ReactCurrentDispatcher;
+    var prefix;
+
+    function describeBuiltInComponentFrame(name, source, ownerFn) {
+      {
+        if (prefix === undefined) {
+          // Extract the VM specific prefix used by each line.
+          try {
+            throw Error();
+          } catch (x) {
+            var match = x.stack.trim().match(/\n( *(at )?)/);
+            prefix = match && match[1] || '';
+          }
+        } // We use the prefix to ensure our stacks line up with native stack frames.
+
+
+        return '\n' + prefix + name;
+      }
+    }
+
+    var reentry = false;
+    var componentFrameCache;
+    {
+      var PossiblyWeakMap = typeof WeakMap === 'function' ? WeakMap : Map;
+      componentFrameCache = new PossiblyWeakMap();
+    }
+
+    function describeNativeComponentFrame(fn, construct) {
+      // If something asked for a stack inside a fake render, it should get ignored.
+      if (!fn || reentry) {
+        return '';
+      }
+
+      {
+        var frame = componentFrameCache.get(fn);
+
+        if (frame !== undefined) {
+          return frame;
+        }
+      }
+      var control;
+      reentry = true;
+      var previousPrepareStackTrace = Error.prepareStackTrace; // $FlowFixMe It does accept undefined.
+
+      Error.prepareStackTrace = undefined;
+      var previousDispatcher;
+      {
+        previousDispatcher = ReactCurrentDispatcher.current; // Set the dispatcher in DEV because this might be call in the render function
+        // for warnings.
+
+        ReactCurrentDispatcher.current = null;
+        disableLogs();
+      }
+
+      try {
+        // This should throw.
+        if (construct) {
+          // Something should be setting the props in the constructor.
+          var Fake = function () {
+            throw Error();
+          }; // $FlowFixMe
+
+
+          Object.defineProperty(Fake.prototype, 'props', {
+            set: function () {
+              // We use a throwing setter instead of frozen or non-writable props
+              // because that won't throw in a non-strict mode function.
+              throw Error();
+            }
+          });
+
+          if (typeof Reflect === 'object' && Reflect.construct) {
+            // We construct a different control for this case to include any extra
+            // frames added by the construct call.
+            try {
+              Reflect.construct(Fake, []);
+            } catch (x) {
+              control = x;
+            }
+
+            Reflect.construct(fn, [], Fake);
+          } else {
+            try {
+              Fake.call();
+            } catch (x) {
+              control = x;
+            }
+
+            fn.call(Fake.prototype);
+          }
+        } else {
+          try {
+            throw Error();
+          } catch (x) {
+            control = x;
+          }
+
+          fn();
+        }
+      } catch (sample) {
+        // This is inlined manually because closure doesn't do it for us.
+        if (sample && control && typeof sample.stack === 'string') {
+          // This extracts the first frame from the sample that isn't also in the control.
+          // Skipping one frame that we assume is the frame that calls the two.
+          var sampleLines = sample.stack.split('\n');
+          var controlLines = control.stack.split('\n');
+          var s = sampleLines.length - 1;
+          var c = controlLines.length - 1;
+
+          while (s >= 1 && c >= 0 && sampleLines[s] !== controlLines[c]) {
+            // We expect at least one stack frame to be shared.
+            // Typically this will be the root most one. However, stack frames may be
+            // cut off due to maximum stack limits. In this case, one maybe cut off
+            // earlier than the other. We assume that the sample is longer or the same
+            // and there for cut off earlier. So we should find the root most frame in
+            // the sample somewhere in the control.
+            c--;
+          }
+
+          for (; s >= 1 && c >= 0; s--, c--) {
+            // Next we find the first one that isn't the same which should be the
+            // frame that called our sample function and the control.
+            if (sampleLines[s] !== controlLines[c]) {
+              // In V8, the first line is describing the message but other VMs don't.
+              // If we're about to return the first line, and the control is also on the same
+              // line, that's a pretty good indicator that our sample threw at same line as
+              // the control. I.e. before we entered the sample frame. So we ignore this result.
+              // This can happen if you passed a class to function component, or non-function.
+              if (s !== 1 || c !== 1) {
+                do {
+                  s--;
+                  c--; // We may still have similar intermediate frames from the construct call.
+                  // The next one that isn't the same should be our match though.
+
+                  if (c < 0 || sampleLines[s] !== controlLines[c]) {
+                    // V8 adds a "new" prefix for native classes. Let's remove it to make it prettier.
+                    var _frame = '\n' + sampleLines[s].replace(' at new ', ' at '); // If our component frame is labeled "<anonymous>"
+                    // but we have a user-provided "displayName"
+                    // splice it in to make the stack more readable.
+
+
+                    if (fn.displayName && _frame.includes('<anonymous>')) {
+                      _frame = _frame.replace('<anonymous>', fn.displayName);
+                    }
+
+                    {
+                      if (typeof fn === 'function') {
+                        componentFrameCache.set(fn, _frame);
+                      }
+                    } // Return the line we found.
+
+                    return _frame;
+                  }
+                } while (s >= 1 && c >= 0);
+              }
+
+              break;
+            }
+          }
+        }
+      } finally {
+        reentry = false;
+        {
+          ReactCurrentDispatcher.current = previousDispatcher;
+          reenableLogs();
+        }
+        Error.prepareStackTrace = previousPrepareStackTrace;
+      } // Fallback to just using the name if we couldn't make it throw.
+
+
+      var name = fn ? fn.displayName || fn.name : '';
+      var syntheticFrame = name ? describeBuiltInComponentFrame(name) : '';
+      {
+        if (typeof fn === 'function') {
+          componentFrameCache.set(fn, syntheticFrame);
+        }
+      }
+      return syntheticFrame;
+    }
+
+    function describeFunctionComponentFrame(fn, source, ownerFn) {
+      {
+        return describeNativeComponentFrame(fn, false);
+      }
+    }
+
+    function shouldConstruct(Component) {
+      var prototype = Component.prototype;
+      return !!(prototype && prototype.isReactComponent);
+    }
+
+    function describeUnknownElementTypeFrameInDEV(type, source, ownerFn) {
+      if (type == null) {
+        return '';
+      }
+
+      if (typeof type === 'function') {
+        {
+          return describeNativeComponentFrame(type, shouldConstruct(type));
+        }
+      }
+
+      if (typeof type === 'string') {
+        return describeBuiltInComponentFrame(type);
+      }
+
+      switch (type) {
+        case REACT_SUSPENSE_TYPE:
+          return describeBuiltInComponentFrame('Suspense');
+
+        case REACT_SUSPENSE_LIST_TYPE:
+          return describeBuiltInComponentFrame('SuspenseList');
+      }
+
+      if (typeof type === 'object') {
+        switch (type.$$typeof) {
+          case REACT_FORWARD_REF_TYPE:
+            return describeFunctionComponentFrame(type.render);
+
+          case REACT_MEMO_TYPE:
+            // Memo may contain any component type so we recursively resolve it.
+            return describeUnknownElementTypeFrameInDEV(type.type, source, ownerFn);
+
+          case REACT_LAZY_TYPE:
+            {
+              var lazyComponent = type;
+              var payload = lazyComponent._payload;
+              var init = lazyComponent._init;
+
+              try {
+                // Lazy may contain any component type so we recursively resolve it.
+                return describeUnknownElementTypeFrameInDEV(init(payload), source, ownerFn);
+              } catch (x) {}
+            }
+        }
+      }
+
+      return '';
+    }
+
+    var hasOwnProperty = Object.prototype.hasOwnProperty;
+    var loggedTypeFailures = {};
+    var ReactDebugCurrentFrame = ReactSharedInternals.ReactDebugCurrentFrame;
+
+    function setCurrentlyValidatingElement(element) {
+      {
+        if (element) {
+          var owner = element._owner;
+          var stack = describeUnknownElementTypeFrameInDEV(element.type, element._source, owner ? owner.type : null);
+          ReactDebugCurrentFrame.setExtraStackFrame(stack);
+        } else {
+          ReactDebugCurrentFrame.setExtraStackFrame(null);
+        }
+      }
+    }
+
+    function checkPropTypes(typeSpecs, values, location, componentName, element) {
+      {
+        // $FlowFixMe This is okay but Flow doesn't know it.
+        var has = Function.call.bind(hasOwnProperty);
+
+        for (var typeSpecName in typeSpecs) {
+          if (has(typeSpecs, typeSpecName)) {
+            var error$1 = void 0; // Prop type validation may throw. In case they do, we don't want to
+            // fail the render phase where it didn't fail before. So we log it.
+            // After these have been cleaned up, we'll let them throw.
+
+            try {
+              // This is intentionally an invariant that gets caught. It's the same
+              // behavior as without this statement except with a better message.
+              if (typeof typeSpecs[typeSpecName] !== 'function') {
+                // eslint-disable-next-line react-internal/prod-error-codes
+                var err = Error((componentName || 'React class') + ': ' + location + ' type `' + typeSpecName + '` is invalid; ' + 'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.' + 'This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.');
+                err.name = 'Invariant Violation';
+                throw err;
+              }
+
+              error$1 = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED');
+            } catch (ex) {
+              error$1 = ex;
+            }
+
+            if (error$1 && !(error$1 instanceof Error)) {
+              setCurrentlyValidatingElement(element);
+              error('%s: type specification of %s' + ' `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error$1);
+              setCurrentlyValidatingElement(null);
+            }
+
+            if (error$1 instanceof Error && !(error$1.message in loggedTypeFailures)) {
+              // Only monitor this failure once because there tends to be a lot of the
+              // same error.
+              loggedTypeFailures[error$1.message] = true;
+              setCurrentlyValidatingElement(element);
+              error('Failed %s type: %s', location, error$1.message);
+              setCurrentlyValidatingElement(null);
+            }
+          }
+        }
+      }
+    }
+
+    var isArrayImpl = Array.isArray; // eslint-disable-next-line no-redeclare
+
+    function isArray(a) {
+      return isArrayImpl(a);
+    }
+    /*
+     * The `'' + value` pattern (used in in perf-sensitive code) throws for Symbol
+     * and Temporal.* types. See https://github.com/facebook/react/pull/22064.
+     *
+     * The functions in this module will throw an easier-to-understand,
+     * easier-to-debug exception with a clear errors message message explaining the
+     * problem. (Instead of a confusing exception thrown inside the implementation
+     * of the `value` object).
+     */
+    // $FlowFixMe only called in DEV, so void return is not possible.
+
+
+    function typeName(value) {
+      {
+        // toStringTag is needed for namespaced types like Temporal.Instant
+        var hasToStringTag = typeof Symbol === 'function' && Symbol.toStringTag;
+        var type = hasToStringTag && value[Symbol.toStringTag] || value.constructor.name || 'Object';
+        return type;
+      }
+    } // $FlowFixMe only called in DEV, so void return is not possible.
+
+
+    function willCoercionThrow(value) {
+      {
+        try {
+          testStringCoercion(value);
+          return false;
+        } catch (e) {
+          return true;
+        }
+      }
+    }
+
+    function testStringCoercion(value) {
+      // If you ended up here by following an exception call stack, here's what's
+      // happened: you supplied an object or symbol value to React (as a prop, key,
+      // DOM attribute, CSS property, string ref, etc.) and when React tried to
+      // coerce it to a string using `'' + value`, an exception was thrown.
+      //
+      // The most common types that will cause this exception are `Symbol` instances
+      // and Temporal objects like `Temporal.Instant`. But any object that has a
+      // `valueOf` or `[Symbol.toPrimitive]` method that throws will also cause this
+      // exception. (Library authors do this to prevent users from using built-in
+      // numeric operators like `+` or comparison operators like `>=` because custom
+      // methods are needed to perform accurate arithmetic or comparison.)
+      //
+      // To fix the problem, coerce this object or symbol value to a string before
+      // passing it to React. The most reliable way is usually `String(value)`.
+      //
+      // To find which value is throwing, check the browser or debugger console.
+      // Before this exception was thrown, there should be `console.error` output
+      // that shows the type (Symbol, Temporal.PlainDate, etc.) that caused the
+      // problem and how that type was used: key, atrribute, input value prop, etc.
+      // In most cases, this console output also shows the component and its
+      // ancestor components where the exception happened.
+      //
+      // eslint-disable-next-line react-internal/safe-string-coercion
+      return '' + value;
+    }
+
+    function checkKeyStringCoercion(value) {
+      {
+        if (willCoercionThrow(value)) {
+          error('The provided key is an unsupported type %s.' + ' This value must be coerced to a string before before using it here.', typeName(value));
+          return testStringCoercion(value); // throw (to help callers find troubleshooting comments)
+        }
+      }
+    }
+
+    var ReactCurrentOwner = ReactSharedInternals.ReactCurrentOwner;
+    var RESERVED_PROPS = {
+      key: true,
+      ref: true,
+      __self: true,
+      __source: true
+    };
+    var specialPropKeyWarningShown;
+    var specialPropRefWarningShown;
+    var didWarnAboutStringRefs;
+    {
+      didWarnAboutStringRefs = {};
+    }
+
+    function hasValidRef(config) {
+      {
+        if (hasOwnProperty.call(config, 'ref')) {
+          var getter = Object.getOwnPropertyDescriptor(config, 'ref').get;
+
+          if (getter && getter.isReactWarning) {
+            return false;
+          }
+        }
+      }
+      return config.ref !== undefined;
+    }
+
+    function hasValidKey(config) {
+      {
+        if (hasOwnProperty.call(config, 'key')) {
+          var getter = Object.getOwnPropertyDescriptor(config, 'key').get;
+
+          if (getter && getter.isReactWarning) {
+            return false;
+          }
+        }
+      }
+      return config.key !== undefined;
+    }
+
+    function warnIfStringRefCannotBeAutoConverted(config, self) {
+      {
+        if (typeof config.ref === 'string' && ReactCurrentOwner.current && self && ReactCurrentOwner.current.stateNode !== self) {
+          var componentName = getComponentNameFromType(ReactCurrentOwner.current.type);
+
+          if (!didWarnAboutStringRefs[componentName]) {
+            error('Component "%s" contains the string ref "%s". ' + 'Support for string refs will be removed in a future major release. ' + 'This case cannot be automatically converted to an arrow function. ' + 'We ask you to manually fix this case by using useRef() or createRef() instead. ' + 'Learn more about using refs safely here: ' + 'https://reactjs.org/link/strict-mode-string-ref', getComponentNameFromType(ReactCurrentOwner.current.type), config.ref);
+            didWarnAboutStringRefs[componentName] = true;
+          }
+        }
+      }
+    }
+
+    function defineKeyPropWarningGetter(props, displayName) {
+      {
+        var warnAboutAccessingKey = function () {
+          if (!specialPropKeyWarningShown) {
+            specialPropKeyWarningShown = true;
+            error('%s: `key` is not a prop. Trying to access it will result ' + 'in `undefined` being returned. If you need to access the same ' + 'value within the child component, you should pass it as a different ' + 'prop. (https://reactjs.org/link/special-props)', displayName);
+          }
+        };
+
+        warnAboutAccessingKey.isReactWarning = true;
+        Object.defineProperty(props, 'key', {
+          get: warnAboutAccessingKey,
+          configurable: true
+        });
+      }
+    }
+
+    function defineRefPropWarningGetter(props, displayName) {
+      {
+        var warnAboutAccessingRef = function () {
+          if (!specialPropRefWarningShown) {
+            specialPropRefWarningShown = true;
+            error('%s: `ref` is not a prop. Trying to access it will result ' + 'in `undefined` being returned. If you need to access the same ' + 'value within the child component, you should pass it as a different ' + 'prop. (https://reactjs.org/link/special-props)', displayName);
+          }
+        };
+
+        warnAboutAccessingRef.isReactWarning = true;
+        Object.defineProperty(props, 'ref', {
+          get: warnAboutAccessingRef,
+          configurable: true
+        });
+      }
+    }
+    /**
+     * Factory method to create a new React element. This no longer adheres to
+     * the class pattern, so do not use new to call it. Also, instanceof check
+     * will not work. Instead test $$typeof field against Symbol.for('react.element') to check
+     * if something is a React Element.
+     *
+     * @param {*} type
+     * @param {*} props
+     * @param {*} key
+     * @param {string|object} ref
+     * @param {*} owner
+     * @param {*} self A *temporary* helper to detect places where `this` is
+     * different from the `owner` when React.createElement is called, so that we
+     * can warn. We want to get rid of owner and replace string `ref`s with arrow
+     * functions, and as long as `this` and owner are the same, there will be no
+     * change in behavior.
+     * @param {*} source An annotation object (added by a transpiler or otherwise)
+     * indicating filename, line number, and/or other information.
+     * @internal
+     */
+
+
+    var ReactElement = function (type, key, ref, self, source, owner, props) {
+      var element = {
+        // This tag allows us to uniquely identify this as a React Element
+        $$typeof: REACT_ELEMENT_TYPE,
+        // Built-in properties that belong on the element
+        type: type,
+        key: key,
+        ref: ref,
+        props: props,
+        // Record the component responsible for creating this element.
+        _owner: owner
+      };
+      {
+        // The validation flag is currently mutative. We put it on
+        // an external backing store so that we can freeze the whole object.
+        // This can be replaced with a WeakMap once they are implemented in
+        // commonly used development environments.
+        element._store = {}; // To make comparing ReactElements easier for testing purposes, we make
+        // the validation flag non-enumerable (where possible, which should
+        // include every environment we run tests in), so the test framework
+        // ignores it.
+
+        Object.defineProperty(element._store, 'validated', {
+          configurable: false,
+          enumerable: false,
+          writable: true,
+          value: false
+        }); // self and source are DEV only properties.
+
+        Object.defineProperty(element, '_self', {
+          configurable: false,
+          enumerable: false,
+          writable: false,
+          value: self
+        }); // Two elements created in two different places should be considered
+        // equal for testing purposes and therefore we hide it from enumeration.
+
+        Object.defineProperty(element, '_source', {
+          configurable: false,
+          enumerable: false,
+          writable: false,
+          value: source
+        });
+
+        if (Object.freeze) {
+          Object.freeze(element.props);
+          Object.freeze(element);
+        }
+      }
+      return element;
+    };
+    /**
+     * https://github.com/reactjs/rfcs/pull/107
+     * @param {*} type
+     * @param {object} props
+     * @param {string} key
+     */
+
+
+    function jsxDEV(type, config, maybeKey, source, self) {
+      {
+        var propName; // Reserved names are extracted
+
+        var props = {};
+        var key = null;
+        var ref = null; // Currently, key can be spread in as a prop. This causes a potential
+        // issue if key is also explicitly declared (ie. <div {...props} key="Hi" />
+        // or <div key="Hi" {...props} /> ). We want to deprecate key spread,
+        // but as an intermediary step, we will use jsxDEV for everything except
+        // <div {...props} key="Hi" />, because we aren't currently able to tell if
+        // key is explicitly declared to be undefined or not.
+
+        if (maybeKey !== undefined) {
+          {
+            checkKeyStringCoercion(maybeKey);
+          }
+          key = '' + maybeKey;
+        }
+
+        if (hasValidKey(config)) {
+          {
+            checkKeyStringCoercion(config.key);
+          }
+          key = '' + config.key;
+        }
+
+        if (hasValidRef(config)) {
+          ref = config.ref;
+          warnIfStringRefCannotBeAutoConverted(config, self);
+        } // Remaining properties are added to a new props object
+
+
+        for (propName in config) {
+          if (hasOwnProperty.call(config, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
+            props[propName] = config[propName];
+          }
+        } // Resolve default props
+
+
+        if (type && type.defaultProps) {
+          var defaultProps = type.defaultProps;
+
+          for (propName in defaultProps) {
+            if (props[propName] === undefined) {
+              props[propName] = defaultProps[propName];
+            }
+          }
+        }
+
+        if (key || ref) {
+          var displayName = typeof type === 'function' ? type.displayName || type.name || 'Unknown' : type;
+
+          if (key) {
+            defineKeyPropWarningGetter(props, displayName);
+          }
+
+          if (ref) {
+            defineRefPropWarningGetter(props, displayName);
+          }
+        }
+
+        return ReactElement(type, key, ref, self, source, ReactCurrentOwner.current, props);
+      }
+    }
+
+    var ReactCurrentOwner$1 = ReactSharedInternals.ReactCurrentOwner;
+    var ReactDebugCurrentFrame$1 = ReactSharedInternals.ReactDebugCurrentFrame;
+
+    function setCurrentlyValidatingElement$1(element) {
+      {
+        if (element) {
+          var owner = element._owner;
+          var stack = describeUnknownElementTypeFrameInDEV(element.type, element._source, owner ? owner.type : null);
+          ReactDebugCurrentFrame$1.setExtraStackFrame(stack);
+        } else {
+          ReactDebugCurrentFrame$1.setExtraStackFrame(null);
+        }
+      }
+    }
+
+    var propTypesMisspellWarningShown;
+    {
+      propTypesMisspellWarningShown = false;
+    }
+    /**
+     * Verifies the object is a ReactElement.
+     * See https://reactjs.org/docs/react-api.html#isvalidelement
+     * @param {?object} object
+     * @return {boolean} True if `object` is a ReactElement.
+     * @final
+     */
+
+    function isValidElement(object) {
+      {
+        return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
+      }
+    }
+
+    function getDeclarationErrorAddendum() {
+      {
+        if (ReactCurrentOwner$1.current) {
+          var name = getComponentNameFromType(ReactCurrentOwner$1.current.type);
+
+          if (name) {
+            return '\n\nCheck the render method of `' + name + '`.';
+          }
+        }
+
+        return '';
+      }
+    }
+
+    function getSourceInfoErrorAddendum(source) {
+      {
+        if (source !== undefined) {
+          var fileName = source.fileName.replace(/^.*[\\\/]/, '');
+          var lineNumber = source.lineNumber;
+          return '\n\nCheck your code at ' + fileName + ':' + lineNumber + '.';
+        }
+
+        return '';
+      }
+    }
+    /**
+     * Warn if there's no key explicitly set on dynamic arrays of children or
+     * object keys are not valid. This allows us to keep track of children between
+     * updates.
+     */
+
+
+    var ownerHasKeyUseWarning = {};
+
+    function getCurrentComponentErrorInfo(parentType) {
+      {
+        var info = getDeclarationErrorAddendum();
+
+        if (!info) {
+          var parentName = typeof parentType === 'string' ? parentType : parentType.displayName || parentType.name;
+
+          if (parentName) {
+            info = "\n\nCheck the top-level render call using <" + parentName + ">.";
+          }
+        }
+
+        return info;
+      }
+    }
+    /**
+     * Warn if the element doesn't have an explicit key assigned to it.
+     * This element is in an array. The array could grow and shrink or be
+     * reordered. All children that haven't already been validated are required to
+     * have a "key" property assigned to it. Error statuses are cached so a warning
+     * will only be shown once.
+     *
+     * @internal
+     * @param {ReactElement} element Element that requires a key.
+     * @param {*} parentType element's parent's type.
+     */
+
+
+    function validateExplicitKey(element, parentType) {
+      {
+        if (!element._store || element._store.validated || element.key != null) {
+          return;
+        }
+
+        element._store.validated = true;
+        var currentComponentErrorInfo = getCurrentComponentErrorInfo(parentType);
+
+        if (ownerHasKeyUseWarning[currentComponentErrorInfo]) {
+          return;
+        }
+
+        ownerHasKeyUseWarning[currentComponentErrorInfo] = true; // Usually the current owner is the offender, but if it accepts children as a
+        // property, it may be the creator of the child that's responsible for
+        // assigning it a key.
+
+        var childOwner = '';
+
+        if (element && element._owner && element._owner !== ReactCurrentOwner$1.current) {
+          // Give the component that originally created this child.
+          childOwner = " It was passed a child from " + getComponentNameFromType(element._owner.type) + ".";
+        }
+
+        setCurrentlyValidatingElement$1(element);
+        error('Each child in a list should have a unique "key" prop.' + '%s%s See https://reactjs.org/link/warning-keys for more information.', currentComponentErrorInfo, childOwner);
+        setCurrentlyValidatingElement$1(null);
+      }
+    }
+    /**
+     * Ensure that every element either is passed in a static location, in an
+     * array with an explicit keys property defined, or in an object literal
+     * with valid key property.
+     *
+     * @internal
+     * @param {ReactNode} node Statically passed child of any type.
+     * @param {*} parentType node's parent's type.
+     */
+
+
+    function validateChildKeys(node, parentType) {
+      {
+        if (typeof node !== 'object') {
+          return;
+        }
+
+        if (isArray(node)) {
+          for (var i = 0; i < node.length; i++) {
+            var child = node[i];
+
+            if (isValidElement(child)) {
+              validateExplicitKey(child, parentType);
+            }
+          }
+        } else if (isValidElement(node)) {
+          // This element was passed in a valid location.
+          if (node._store) {
+            node._store.validated = true;
+          }
+        } else if (node) {
+          var iteratorFn = getIteratorFn(node);
+
+          if (typeof iteratorFn === 'function') {
+            // Entry iterators used to provide implicit keys,
+            // but now we print a separate warning for them later.
+            if (iteratorFn !== node.entries) {
+              var iterator = iteratorFn.call(node);
+              var step;
+
+              while (!(step = iterator.next()).done) {
+                if (isValidElement(step.value)) {
+                  validateExplicitKey(step.value, parentType);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    /**
+     * Given an element, validate that its props follow the propTypes definition,
+     * provided by the type.
+     *
+     * @param {ReactElement} element
+     */
+
+
+    function validatePropTypes(element) {
+      {
+        var type = element.type;
+
+        if (type === null || type === undefined || typeof type === 'string') {
+          return;
+        }
+
+        var propTypes;
+
+        if (typeof type === 'function') {
+          propTypes = type.propTypes;
+        } else if (typeof type === 'object' && (type.$$typeof === REACT_FORWARD_REF_TYPE || // Note: Memo only checks outer props here.
+        // Inner props are checked in the reconciler.
+        type.$$typeof === REACT_MEMO_TYPE)) {
+          propTypes = type.propTypes;
+        } else {
+          return;
+        }
+
+        if (propTypes) {
+          // Intentionally inside to avoid triggering lazy initializers:
+          var name = getComponentNameFromType(type);
+          checkPropTypes(propTypes, element.props, 'prop', name, element);
+        } else if (type.PropTypes !== undefined && !propTypesMisspellWarningShown) {
+          propTypesMisspellWarningShown = true; // Intentionally inside to avoid triggering lazy initializers:
+
+          var _name = getComponentNameFromType(type);
+
+          error('Component %s declared `PropTypes` instead of `propTypes`. Did you misspell the property assignment?', _name || 'Unknown');
+        }
+
+        if (typeof type.getDefaultProps === 'function' && !type.getDefaultProps.isReactClassApproved) {
+          error('getDefaultProps is only used on classic React.createClass ' + 'definitions. Use a static property named `defaultProps` instead.');
+        }
+      }
+    }
+    /**
+     * Given a fragment, validate that it can only be provided with fragment props
+     * @param {ReactElement} fragment
+     */
+
+
+    function validateFragmentProps(fragment) {
+      {
+        var keys = Object.keys(fragment.props);
+
+        for (var i = 0; i < keys.length; i++) {
+          var key = keys[i];
+
+          if (key !== 'children' && key !== 'key') {
+            setCurrentlyValidatingElement$1(fragment);
+            error('Invalid prop `%s` supplied to `React.Fragment`. ' + 'React.Fragment can only have `key` and `children` props.', key);
+            setCurrentlyValidatingElement$1(null);
+            break;
+          }
+        }
+
+        if (fragment.ref !== null) {
+          setCurrentlyValidatingElement$1(fragment);
+          error('Invalid attribute `ref` supplied to `React.Fragment`.');
+          setCurrentlyValidatingElement$1(null);
+        }
+      }
+    }
+
+    function jsxWithValidation(type, props, key, isStaticChildren, source, self) {
+      {
+        var validType = isValidElementType(type); // We warn in this case but don't throw. We expect the element creation to
+        // succeed and there will likely be errors in render.
+
+        if (!validType) {
+          var info = '';
+
+          if (type === undefined || typeof type === 'object' && type !== null && Object.keys(type).length === 0) {
+            info += ' You likely forgot to export your component from the file ' + "it's defined in, or you might have mixed up default and named imports.";
+          }
+
+          var sourceInfo = getSourceInfoErrorAddendum(source);
+
+          if (sourceInfo) {
+            info += sourceInfo;
+          } else {
+            info += getDeclarationErrorAddendum();
+          }
+
+          var typeString;
+
+          if (type === null) {
+            typeString = 'null';
+          } else if (isArray(type)) {
+            typeString = 'array';
+          } else if (type !== undefined && type.$$typeof === REACT_ELEMENT_TYPE) {
+            typeString = "<" + (getComponentNameFromType(type.type) || 'Unknown') + " />";
+            info = ' Did you accidentally export a JSX literal instead of a component?';
+          } else {
+            typeString = typeof type;
+          }
+
+          error('React.jsx: type is invalid -- expected a string (for ' + 'built-in components) or a class/function (for composite ' + 'components) but got: %s.%s', typeString, info);
+        }
+
+        var element = jsxDEV(type, props, key, source, self); // The result can be nullish if a mock or a custom function is used.
+        // TODO: Drop this when these are no longer allowed as the type argument.
+
+        if (element == null) {
+          return element;
+        } // Skip key warning if the type isn't valid since our key validation logic
+        // doesn't expect a non-string/function type and can throw confusing errors.
+        // We don't want exception behavior to differ between dev and prod.
+        // (Rendering will throw with a helpful message and as soon as the type is
+        // fixed, the key warnings will appear.)
+
+
+        if (validType) {
+          var children = props.children;
+
+          if (children !== undefined) {
+            if (isStaticChildren) {
+              if (isArray(children)) {
+                for (var i = 0; i < children.length; i++) {
+                  validateChildKeys(children[i], type);
+                }
+
+                if (Object.freeze) {
+                  Object.freeze(children);
+                }
+              } else {
+                error('React.jsx: Static children should always be an array. ' + 'You are likely explicitly calling React.jsxs or React.jsxDEV. ' + 'Use the Babel transform instead.');
+              }
+            } else {
+              validateChildKeys(children, type);
+            }
+          }
+        }
+
+        if (type === REACT_FRAGMENT_TYPE) {
+          validateFragmentProps(element);
+        } else {
+          validatePropTypes(element);
+        }
+
+        return element;
+      }
+    } // These two functions exist to still get child warnings in dev
+    // even with the prod transform. This means that jsxDEV is purely
+    // opt-in behavior for better messages but that we won't stop
+    // giving you warnings if you use production apis.
+
+
+    function jsxWithValidationStatic(type, props, key) {
+      {
+        return jsxWithValidation(type, props, key, true);
+      }
+    }
+
+    function jsxWithValidationDynamic(type, props, key) {
+      {
+        return jsxWithValidation(type, props, key, false);
+      }
+    }
+
+    var jsx = jsxWithValidationDynamic; // we may want to special case jsxs internally to take advantage of static children.
+    // for now we can ship identical prod functions
+
+    var jsxs = jsxWithValidationStatic;
+    exports.Fragment = REACT_FRAGMENT_TYPE;
+    exports.jsx = jsx;
+    exports.jsxs = jsxs;
+  })();
+}
+},{"react":"../node_modules/react/index.js"}],"../node_modules/react/jsx-runtime.js":[function(require,module,exports) {
+'use strict';
+
+if ("development" === 'production') {
+  module.exports = require('./cjs/react-jsx-runtime.production.min.js');
+} else {
+  module.exports = require('./cjs/react-jsx-runtime.development.js');
+}
+},{"./cjs/react-jsx-runtime.development.js":"../node_modules/react/cjs/react-jsx-runtime.development.js"}],"Images/start.svg":[function(require,module,exports) {
+module.exports = "/start.4a11b907.svg";
+},{}],"../node_modules/easytimer.js/dist/easytimer.js":[function(require,module,exports) {
 var define;
 var global = arguments[3];
 /**
@@ -33686,7 +34980,491 @@ var define;
 
 !function(e,t){"object"==typeof exports&&"undefined"!=typeof module?t(exports,require("react"),require("easytimer.js")):"function"==typeof define&&define.amd?define(["exports","react","easytimer.js"],t):t((e="undefined"!=typeof globalThis?globalThis:e||self)["easytimer-react-hook"]={},e.React,e.easytimer)}(this,(function(e,t,n){"use strict";e.default=function(e){var o=void 0===e?{}:e,r=o.startValues,i=o.target,s=o.precision,u=o.countdown,a=o.updateWhenTargetAchieved,f=["days","hours","minutes","seconds","secondTenths"],c=function(e){m(e.getTimeValues().toString(f))},d=function(e){c(e.detail.timer),T(!1)},l=function(){return T(!0)},p=function(){g.off("started",d),g.off("reset",d),g.off("targetAchieved",l)},g=t.useState(new n.Timer({startValues:r,target:i,precision:s,countdown:u,callback:c}))[0],m=t.useState(g.getTimeValues().toString(f))[1],h=t.useState(!1),y=h[0],T=h[1];return t.useEffect((function(){return g.on("started",d),g.on("reset",d),a&&g.on("targetAchieved",l),function(){return p()}}),[a]),t.useEffect((function(){return function(){g.stop(),p()}}),[]),[g,y]},Object.defineProperty(e,"__esModule",{value:!0})}));
 
-},{"react":"../node_modules/react/index.js","easytimer.js":"../node_modules/easytimer.js/dist/easytimer.js"}],"Components/Timer.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","easytimer.js":"../node_modules/easytimer.js/dist/easytimer.js"}],"../node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+var bundleURL = null;
+
+function getBundleURLCached() {
+  if (!bundleURL) {
+    bundleURL = getBundleURL();
+  }
+
+  return bundleURL;
+}
+
+function getBundleURL() {
+  // Attempt to find the URL of the current script and use that as the base URL
+  try {
+    throw new Error();
+  } catch (err) {
+    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
+
+    if (matches) {
+      return getBaseURL(matches[0]);
+    }
+  }
+
+  return '/';
+}
+
+function getBaseURL(url) {
+  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)?\/[^/]+(?:\?.*)?$/, '$1') + '/';
+}
+
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+},{}],"../node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
+var bundle = require('./bundle-url');
+
+function updateLink(link) {
+  var newLink = link.cloneNode();
+
+  newLink.onload = function () {
+    link.remove();
+  };
+
+  newLink.href = link.href.split('?')[0] + '?' + Date.now();
+  link.parentNode.insertBefore(newLink, link.nextSibling);
+}
+
+var cssTimeout = null;
+
+function reloadCSS() {
+  if (cssTimeout) {
+    return;
+  }
+
+  cssTimeout = setTimeout(function () {
+    var links = document.querySelectorAll('link[rel="stylesheet"]');
+
+    for (var i = 0; i < links.length; i++) {
+      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
+        updateLink(links[i]);
+      }
+    }
+
+    cssTimeout = null;
+  }, 50);
+}
+
+module.exports = reloadCSS;
+},{"./bundle-url":"../node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"Components/TimesUp.module.scss":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"./../Images/circle_background.svg":[["circle_background.53249f7c.svg","Images/circle_background.svg"],"Images/circle_background.svg"],"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"Images/alarm_icon.svg":[function(require,module,exports) {
+module.exports = "/alarm_icon.cba90c3b.svg";
+},{}],"Components/TimesUp.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = TimesUp;
+
+var _jsxRuntime = require("react/jsx-runtime");
+
+require("./TimesUp.module.scss");
+
+var _alarm_icon = _interopRequireDefault(require("../Images/alarm_icon.svg"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var __assign = void 0 && (void 0).__assign || function () {
+  __assign = Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+
+    return t;
+  };
+
+  return __assign.apply(this, arguments);
+};
+
+function TimesUp() {
+  return (0, _jsxRuntime.jsxs)("section", __assign({
+    className: "section"
+  }, {
+    children: [(0, _jsxRuntime.jsx)("img", {
+      className: "alarmBell",
+      src: _alarm_icon.default,
+      alt: ""
+    }), (0, _jsxRuntime.jsx)("h5", __assign({
+      className: "timesUp"
+    }, {
+      children: "Times up!"
+    }))]
+  }));
+}
+},{"react/jsx-runtime":"../node_modules/react/jsx-runtime.js","./TimesUp.module.scss":"Components/TimesUp.module.scss","../Images/alarm_icon.svg":"Images/alarm_icon.svg"}],"Images/clock3.svg":[function(require,module,exports) {
+module.exports = "/clock3.a84369d9.svg";
+},{}],"Pages/Analog.module.scss":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"Pages/Analog.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _jsxRuntime = require("react/jsx-runtime");
+
+var _react = require("react");
+
+var _TimesUp = _interopRequireDefault(require("../Components/TimesUp"));
+
+var _clock = _interopRequireDefault(require("../Images/clock3.svg"));
+
+var styles = _interopRequireWildcard(require("./Analog.module.scss"));
+
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var __assign = void 0 && (void 0).__assign || function () {
+  __assign = Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+
+    return t;
+  };
+
+  return __assign.apply(this, arguments);
+};
+
+function Analog(_a) {
+  var timeCounter = _a.timeCounter,
+      pauseState = _a.pauseState,
+      interval = _a.interval;
+
+  var _b = (0, _react.useState)(Number),
+      min = _b[0],
+      setMin = _b[1];
+
+  var _c = (0, _react.useState)(Number),
+      sek = _c[0],
+      setSek = _c[1];
+
+  var minDeg = 360 / 60;
+  var minCalc = min * minDeg;
+  var sekCalc = sek * minDeg;
+  (0, _react.useEffect)(function () {
+    setMin(timeCounter === null || timeCounter === void 0 ? void 0 : timeCounter.minutes);
+  }, [timeCounter === null || timeCounter === void 0 ? void 0 : timeCounter.minutes]);
+  (0, _react.useEffect)(function () {
+    setSek(timeCounter === null || timeCounter === void 0 ? void 0 : timeCounter.seconds);
+  }, [timeCounter === null || timeCounter === void 0 ? void 0 : timeCounter.seconds]);
+  return (0, _jsxRuntime.jsx)("div", {
+    children: (0, _jsxRuntime.jsxs)("section", __assign({
+      id: "clockSection",
+      className: styles.clockSection
+    }, {
+      children: [(0, _jsxRuntime.jsx)("img", {
+        id: "clock",
+        className: styles.clock,
+        src: _clock.default,
+        alt: ""
+      }), (0, _jsxRuntime.jsxs)("svg", __assign({
+        id: "sek",
+        className: styles.sek,
+        width: "11",
+        height: "250",
+        viewBox: "0 0 11 250",
+        fill: "none",
+        xmlns: "http://www.w3.org/2000/svg",
+        style: {
+          transform: "rotate(".concat(sekCalc, "deg)")
+        }
+      }, {
+        children: [(0, _jsxRuntime.jsx)("path", {
+          d: "M6.00355 129.192C8.75704 129.192 10.9812 126.96 10.9713 124.206C10.9614 121.452 8.72123 119.22 5.96775 119.22C3.21426 119.22 0.990132 121.452 1.00002 124.206C1.00991 126.96 3.25006 129.192 6.00355 129.192Z",
+          fill: "#555555"
+        }), (0, _jsxRuntime.jsx)("path", {
+          d: "M6.52523 0.999994C6.52324 0.447713 6.07392 -1.09832e-08 5.52164 -7.0755e-09C4.96935 -3.16781e-09 4.52324 0.447713 4.52523 0.999994L4.96766 124.222C4.96965 124.775 5.41897 125.222 5.97125 125.222C6.52354 125.222 6.96965 124.775 6.96766 124.222L6.52523 0.999994Z",
+          fill: "#555555"
+        })]
+      })), (0, _jsxRuntime.jsxs)("svg", __assign({
+        id: "min",
+        className: styles.min,
+        style: {
+          transform: "rotate(".concat(minCalc, "deg)")
+        },
+        width: "17",
+        height: "248",
+        viewBox: "0 0 17 248",
+        fill: "none",
+        xmlns: "http://www.w3.org/2000/svg"
+      }, {
+        children: [(0, _jsxRuntime.jsx)("path", {
+          id: "minHand",
+          transform: "rotate(6deg)",
+          d: "M9.01427 131.172C13.4246 131.172 16.987 127.596 16.9711 123.186C16.9553 118.776 13.3672 115.2 8.95692 115.2C4.54663 115.2 0.984212 118.776 1.00005 123.186C1.01588 127.596 4.60397 131.172 9.01427 131.172Z",
+          fill: "black"
+        }), (0, _jsxRuntime.jsx)("path", {
+          d: "M10.5716 1.99638C10.5676 0.893809 9.67059 -2.19267e-08 8.56801 -1.41255e-08C7.46544 -6.32418e-09 6.57483 0.893809 6.57879 1.99638L7.01407 123.226C7.01803 124.328 7.91506 125.222 9.01763 125.222C10.1202 125.222 11.0108 124.328 11.0069 123.226L10.5716 1.99638Z",
+          fill: "black"
+        })]
+      })), pauseState === false && interval === false && (timeCounter === null || timeCounter === void 0 ? void 0 : timeCounter.seconds) === 0 && (timeCounter === null || timeCounter === void 0 ? void 0 : timeCounter.minutes) < 1 ? (0, _jsxRuntime.jsx)(_TimesUp.default, {}) : null]
+    }))
+  });
+}
+
+var _default = Analog;
+exports.default = _default;
+},{"react/jsx-runtime":"../node_modules/react/jsx-runtime.js","react":"../node_modules/react/index.js","../Components/TimesUp":"Components/TimesUp.tsx","../Images/clock3.svg":"Images/clock3.svg","./Analog.module.scss":"Pages/Analog.module.scss"}],"Components/Timer.module.scss":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"Images/naviconblack.svg":[function(require,module,exports) {
+module.exports = "/naviconblack.7c2eb358.svg";
+},{}],"Images/naviconwhite.svg":[function(require,module,exports) {
+module.exports = "/naviconwhite.62ebc118.svg";
+},{}],"Pages/Digital.module.scss":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"Pages/Digital.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _jsxRuntime = require("react/jsx-runtime");
+
+var _TimesUp = _interopRequireDefault(require("../Components/TimesUp"));
+
+require("./Digital.module.scss");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var __assign = void 0 && (void 0).__assign || function () {
+  __assign = Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+
+    return t;
+  };
+
+  return __assign.apply(this, arguments);
+};
+
+function Digital(_a) {
+  var timeCounter = _a.timeCounter,
+      pauseState = _a.pauseState,
+      time = _a.time,
+      interval = _a.interval;
+  return (0, _jsxRuntime.jsxs)("section", __assign({
+    className: "digital"
+  }, {
+    children: [(0, _jsxRuntime.jsx)("h1", {
+      children: timeCounter
+    }), pauseState === false && interval === false && (time === null || time === void 0 ? void 0 : time.seconds) === 0 && (time === null || time === void 0 ? void 0 : time.minutes) < 1 ? (0, _jsxRuntime.jsx)(_TimesUp.default, {}) : null]
+  }));
+}
+
+var _default = Digital;
+exports.default = _default;
+},{"react/jsx-runtime":"../node_modules/react/jsx-runtime.js","../Components/TimesUp":"Components/TimesUp.tsx","./Digital.module.scss":"Pages/Digital.module.scss"}],"Pages/Visuell.module.scss":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"Pages/Visuell.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _jsxRuntime = require("react/jsx-runtime");
+
+var _react = require("react");
+
+var _TimesUp = _interopRequireDefault(require("../Components/TimesUp"));
+
+require("./Visuell.module.scss");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var __assign = void 0 && (void 0).__assign || function () {
+  __assign = Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+
+    return t;
+  };
+
+  return __assign.apply(this, arguments);
+};
+
+//Funktion som tar emot vald tid via props från "Timer"
+function Visuel(_a) {
+  var time = _a.time,
+      pauseState = _a.pauseState,
+      interval = _a.interval;
+
+  var _b = (0, _react.useState)(0),
+      timerTime = _b[0],
+      setTimerTime = _b[1]; //Sätt tiden för hur länge animationen ska köra
+
+
+  (0, _react.useEffect)(function () {
+    if ((time === null || time === void 0 ? void 0 : time.minutes) > 0) setTimerTime(function () {
+      return (time === null || time === void 0 ? void 0 : time.minutes) * 60;
+    });else {
+      setTimerTime(function () {
+        return time === null || time === void 0 ? void 0 : time.seconds;
+      });
+    }
+  }, [time]); //Tar bort/lägger till animationen beroende på sekund/minut
+
+  if ((time === null || time === void 0 ? void 0 : time.seconds) === 0 && (time === null || time === void 0 ? void 0 : time.minutes) < 1 && document.getElementById("animation")) {
+    var animation = document.getElementById("animation");
+    animation.style.animation = "none";
+  } else if ((time === null || time === void 0 ? void 0 : time.minutes) >= 1 && document.getElementById("animation")) {
+    var animation = document.getElementById("animation");
+    animation.style.animation = "hourglass linear ".concat(timerTime, "s");
+  }
+
+  return (0, _jsxRuntime.jsxs)("section", __assign({
+    className: "visuell"
+  }, {
+    children: [(0, _jsxRuntime.jsx)("article", {
+      className: (time === null || time === void 0 ? void 0 : time.seconds) === 0 && (time === null || time === void 0 ? void 0 : time.minutes) < 1 ? "" : "animation",
+      id: "animation",
+      style: {
+        animation: "hourglass linear ".concat(timerTime, "s")
+      }
+    }), pauseState === false && interval === false && (time === null || time === void 0 ? void 0 : time.seconds) === 0 && (time === null || time === void 0 ? void 0 : time.minutes) < 1 ? (0, _jsxRuntime.jsx)(_TimesUp.default, {}) : null]
+  }));
+}
+
+var _default = Visuel;
+exports.default = _default;
+},{"react/jsx-runtime":"../node_modules/react/jsx-runtime.js","react":"../node_modules/react/index.js","../Components/TimesUp":"Components/TimesUp.tsx","./Visuell.module.scss":"Pages/Visuell.module.scss"}],"Components/Pause.module.scss":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"./../Images/circle_background.svg":[["circle_background.53249f7c.svg","Images/circle_background.svg"],"Images/circle_background.svg"],"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"Images/pause.svg":[function(require,module,exports) {
+module.exports = "/pause.55a68bca.svg";
+},{}],"Components/Pause.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _jsxRuntime = require("react/jsx-runtime");
+
+require("./Pause.module.scss");
+
+var _easytimerReactHook = _interopRequireDefault(require("easytimer-react-hook"));
+
+var _pause = _interopRequireDefault(require("../Images/pause.svg"));
+
+var _react = require("react");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var __assign = void 0 && (void 0).__assign || function () {
+  __assign = Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+
+    return t;
+  };
+
+  return __assign.apply(this, arguments);
+};
+
+function Pause(_a) {
+  var pauseState = _a.pauseState;
+
+  var _b = (0, _easytimerReactHook.default)({}),
+      timer = _b[0],
+      isTargetAchieved = _b[1];
+
+  var _c = (0, _react.useState)(pauseState),
+      pause = _c[0],
+      setPause = _c[1]; //Starta timer-funktionen vid första rendering av komponent
+
+
+  (0, _react.useEffect)(function () {
+    timer.start({
+      startValues: {
+        minutes: 5
+      },
+      countdown: true
+    });
+  }, []); //Pausa/starta paus-timern
+
+  (0, _react.useEffect)(function () {
+    if (pause) {
+      timer.start();
+    }
+
+    if (!pause) {
+      timer.pause();
+    }
+  }, [pause]);
+  return (0, _jsxRuntime.jsxs)("section", __assign({
+    className: "pause"
+  }, {
+    children: [(0, _jsxRuntime.jsx)("img", {
+      className: "pauselogo",
+      src: _pause.default,
+      alt: "pauselogo"
+    }), (0, _jsxRuntime.jsx)("h1", {
+      children: "Pause & breathe"
+    }), (0, _jsxRuntime.jsx)("p", __assign({
+      className: "pauseTime"
+    }, {
+      children: timer === null || timer === void 0 ? void 0 : timer.getTimeValues().toString(["minutes", "seconds"])
+    }))]
+  }));
+}
+
+var _default = Pause;
+exports.default = _default;
+},{"react/jsx-runtime":"../node_modules/react/jsx-runtime.js","./Pause.module.scss":"Components/Pause.module.scss","easytimer-react-hook":"../node_modules/easytimer-react-hook/dist/index.min.js","../Images/pause.svg":"Images/pause.svg","react":"../node_modules/react/index.js"}],"Components/Timer.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33694,42 +35472,331 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Timer = Timer;
 
+var _jsxRuntime = require("react/jsx-runtime");
+
 var _easytimerReactHook = _interopRequireDefault(require("easytimer-react-hook"));
 
-var _react = _interopRequireDefault(require("react"));
+var _react = require("react");
+
+var _Analog = _interopRequireDefault(require("../Pages/Analog"));
+
+require("./Timer.module.scss");
+
+var _naviconblack = _interopRequireDefault(require("../Images/naviconblack.svg"));
+
+var _naviconwhite = _interopRequireDefault(require("../Images/naviconwhite.svg"));
+
+var _Digital = _interopRequireDefault(require("../Pages/Digital"));
+
+var _Visuell = _interopRequireDefault(require("../Pages/Visuell"));
+
+var _Pause = _interopRequireDefault(require("./Pause"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+var __assign = void 0 && (void 0).__assign || function () {
+  __assign = Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
 
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
 
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+    return t;
+  };
 
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+  return __assign.apply(this, arguments);
+};
 
 function Timer() {
-  /* The hook returns an EasyTimer instance and a flag to see if the target has been achieved */
-  var _useTimer = (0, _easytimerReactHook.default)({
-    /* Hook configuration */
-  }),
-      _useTimer2 = _slicedToArray(_useTimer, 2),
-      timer = _useTimer2[0],
-      isTargetAchieved = _useTimer2[1];
+  var _a = (0, _react.useState)(false),
+      toggleDropdown = _a[0],
+      setToggleDropdown = _a[1];
 
-  timer.start({
-    startValues: [0, 0, 1, 0, 0],
-    countdown: true
-    /* EasyTimer start configuration */
+  var _b = (0, _react.useState)(0),
+      count = _b[0],
+      setCount = _b[1];
 
+  var _c = (0, _react.useState)(false),
+      interval = _c[0],
+      setInterval = _c[1];
+
+  var _d = (0, _react.useState)(false),
+      pause = _d[0],
+      setPause = _d[1];
+
+  var _e = (0, _react.useState)(false),
+      startTimer = _e[0],
+      setStartTimer = _e[1];
+
+  var _f = (0, _react.useState)("analog"),
+      selectPage = _f[0],
+      setSelectPage = _f[1];
+
+  var _g = (0, _easytimerReactHook.default)({}),
+      timer = _g[0],
+      isTargetAchieved = _g[1];
+
+  var pauseFiveMin = function pauseFiveMin() {
+    return setPause(function () {
+      return !pause;
+    });
+  };
+
+  var intervalTimer = function intervalTimer() {
+    return setInterval(function () {
+      return !interval;
+    });
+  };
+
+  function add() {
+    setCount(function () {
+      return count + 1;
+    });
+  }
+
+  function sub() {
+    if (count > 0) setCount(function () {
+      return count - 1;
+    });
+  } //Tar bort setTimer sektionen när timern är true/startad och vise versa
+
+
+  (0, _react.useEffect)(function () {
+    if (startTimer) {
+      var section = document.getElementById("timerSection");
+      section.style.display = "none";
+    } else if (!startTimer) {
+      var section = document.getElementById("timerSection");
+      section.style.display = "flex";
+    }
+  }, [startTimer]);
+
+  function startTimerFunction() {
+    setStartTimer(function () {
+      return true;
+    });
+    timer.start({
+      startValues: {
+        minutes: count
+      },
+      countdown: true
+    });
+  }
+
+  function abortTimer() {
+    timer.stop();
+    setStartTimer(function () {
+      return false;
+    });
+    setCount(0);
+  }
+
+  if (!timer.isRunning() && pause && startTimer || !timer.isRunning() && pause && interval === true && startTimer) {
+    setTimeout(startTimerFunction, 50000);
+  }
+
+  if (!timer.isRunning() && interval === true && !pause && startTimer === true) {
+    setTimeout(startTimerFunction, 1000);
+  }
+
+  return (0, _jsxRuntime.jsxs)("section", {
+    children: [(0, _jsxRuntime.jsxs)("nav", __assign({
+      className: "nav"
+    }, {
+      children: [(0, _jsxRuntime.jsx)("img", {
+        src: toggleDropdown || selectPage === "visuell" && startTimer === true ? "".concat(_naviconwhite.default) : "".concat(_naviconblack.default),
+        alt: "picture of logo",
+        onClick: function onClick() {
+          return setToggleDropdown(!toggleDropdown);
+        }
+      }), toggleDropdown ? (0, _jsxRuntime.jsxs)("section", __assign({
+        onClick: function onClick() {
+          return setToggleDropdown(false);
+        }
+      }, {
+        children: [(0, _jsxRuntime.jsx)("h4", __assign({
+          onClick: function onClick() {
+            return setSelectPage("analog");
+          }
+        }, {
+          children: "ANALOG TIMER"
+        })), (0, _jsxRuntime.jsx)("h4", __assign({
+          onClick: function onClick() {
+            return setSelectPage("digital");
+          }
+        }, {
+          children: "DIGITAL TIMER"
+        })), (0, _jsxRuntime.jsx)("h4", __assign({
+          onClick: function onClick() {
+            return setSelectPage("visuell");
+          }
+        }, {
+          children: "VISUELL TIMER"
+        }))]
+      })) : null]
+    })), (0, _jsxRuntime.jsxs)("section", __assign({
+      id: "timerSection",
+      className: "timerSection"
+    }, {
+      children: [(0, _jsxRuntime.jsxs)("section", __assign({
+        className: "setTimerSection"
+      }, {
+        children: [(0, _jsxRuntime.jsx)("h1", __assign({
+          className: "leftright",
+          onClick: sub
+        }, {
+          children: "\u25C0\uFE0E"
+        })), (0, _jsxRuntime.jsxs)("section", {
+          children: [(0, _jsxRuntime.jsxs)("h1", __assign({
+            className: "count"
+          }, {
+            children: [" ", count]
+          })), (0, _jsxRuntime.jsx)("h2", __assign({
+            className: "minSub"
+          }, {
+            children: " minutes"
+          }))]
+        }), (0, _jsxRuntime.jsx)("h1", __assign({
+          className: "leftright",
+          onClick: add
+        }, {
+          children: "\u25B6\uFE0E"
+        }))]
+      })), (0, _jsxRuntime.jsxs)("form", {
+        children: [(0, _jsxRuntime.jsxs)("article", {
+          children: [(0, _jsxRuntime.jsx)("label", __assign({
+            htmlFor: "fiveminbreak"
+          }, {
+            children: "5 min break / interval"
+          })), (0, _jsxRuntime.jsx)("input", {
+            type: "checkbox",
+            onClick: pauseFiveMin,
+            id: "fiveminbreak"
+          })]
+        }), (0, _jsxRuntime.jsxs)("article", {
+          children: [(0, _jsxRuntime.jsx)("label", __assign({
+            htmlFor: "interval"
+          }, {
+            children: "interval"
+          })), (0, _jsxRuntime.jsx)("input", {
+            type: "checkbox",
+            id: "interval",
+            onClick: intervalTimer
+          })]
+        })]
+      }), (0, _jsxRuntime.jsx)("button", __assign({
+        onClick: startTimerFunction
+      }, {
+        children: "START TIMER"
+      }))]
+    })), startTimer && selectPage === "analog" ? (0, _jsxRuntime.jsx)(_Analog.default, {
+      interval: interval,
+      timeCounter: timer.getTimeValues(),
+      pauseState: pause
+    }) : null, startTimer && selectPage === "digital" ? (0, _jsxRuntime.jsx)(_Digital.default, {
+      timeCounter: timer.getTimeValues().toString(["minutes", "seconds"]),
+      pauseState: pause,
+      interval: interval,
+      time: timer.getTimeValues()
+    }) : null, startTimer && selectPage === "visuell" ? (0, _jsxRuntime.jsx)(_Visuell.default, {
+      interval: interval,
+      time: timer.getTimeValues(),
+      pauseState: pause
+    }) : null, pause && startTimer && timer.getTimeValues().seconds === 0 && timer.getTimeValues().minutes < 1 || pause && interval && startTimer && timer.getTimeValues().seconds === 0 && timer.getTimeValues().minutes < 1 ? (0, _jsxRuntime.jsxs)("section", {
+      children: [(0, _jsxRuntime.jsx)(_Pause.default, {
+        pauseState: pause
+      }), (0, _jsxRuntime.jsx)("button", __assign({
+        className: "goOn",
+        onClick: function onClick() {
+          return startTimerFunction();
+        }
+      }, {
+        children: "NO PAUSE, GO NOW!"
+      }))]
+    }) : null, startTimer && pause || startTimer && interval || startTimer ? (0, _jsxRuntime.jsx)("button", __assign({
+      className: "abort",
+      onClick: abortTimer
+    }, {
+      children: "ABORT TIMER"
+    })) : null, startTimer === true && pause === false && interval === false && timer.getTimeValues().seconds === 0 && timer.getTimeValues().minutes < 1 ? (0, _jsxRuntime.jsx)("button", __assign({
+      className: "setNew",
+      onClick: abortTimer
+    }, {
+      children: "SET NEW TIMER"
+    })) : null]
   });
-  return /*#__PURE__*/_react.default.createElement("div", null, timer.getTimeValues().toString());
 }
-},{"easytimer-react-hook":"../node_modules/easytimer-react-hook/dist/index.min.js","react":"../node_modules/react/index.js"}],"App.js":[function(require,module,exports) {
+},{"react/jsx-runtime":"../node_modules/react/jsx-runtime.js","easytimer-react-hook":"../node_modules/easytimer-react-hook/dist/index.min.js","react":"../node_modules/react/index.js","../Pages/Analog":"Pages/Analog.tsx","./Timer.module.scss":"Components/Timer.module.scss","../Images/naviconblack.svg":"Images/naviconblack.svg","../Images/naviconwhite.svg":"Images/naviconwhite.svg","../Pages/Digital":"Pages/Digital.tsx","../Pages/Visuell":"Pages/Visuell.tsx","./Pause":"Components/Pause.tsx"}],"Components/Loading.module.scss":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"Components/Loading.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _jsxRuntime = require("react/jsx-runtime");
+
+var _react = require("react");
+
+var _start = _interopRequireDefault(require("../Images/start.svg"));
+
+var _Timer = require("./Timer");
+
+require("./Loading.module.scss");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var __assign = void 0 && (void 0).__assign || function () {
+  __assign = Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+
+    return t;
+  };
+
+  return __assign.apply(this, arguments);
+};
+
+function Loading() {
+  var _a = (0, _react.useState)(false),
+      startApp = _a[0],
+      setStartApp = _a[1];
+
+  function Start() {
+    setStartApp(function () {
+      return !startApp;
+    });
+  }
+
+  return (0, _jsxRuntime.jsxs)("section", {
+    children: [!startApp ? (0, _jsxRuntime.jsx)("section", __assign({
+      className: "wrap"
+    }, {
+      children: (0, _jsxRuntime.jsx)("img", {
+        src: _start.default,
+        alt: "picture of logo",
+        onClick: Start
+      })
+    })) : null, startApp ? (0, _jsxRuntime.jsx)(_Timer.Timer, {}) : null]
+  });
+}
+
+var _default = Loading;
+exports.default = _default;
+},{"react/jsx-runtime":"../node_modules/react/jsx-runtime.js","react":"../node_modules/react/index.js","../Images/start.svg":"Images/start.svg","./Timer":"Components/Timer.tsx","./Loading.module.scss":"Components/Loading.module.scss"}],"App.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33737,18 +35804,18 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.App = App;
 
-var _react = _interopRequireDefault(require("react"));
+var _jsxRuntime = require("react/jsx-runtime");
 
-var _Timer = require("./Components/Timer");
+var _Loading = _interopRequireDefault(require("./Components/Loading"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function App() {
-  return /*#__PURE__*/_react.default.createElement("section", {
-    id: "timer"
-  }, /*#__PURE__*/_react.default.createElement(_Timer.Timer, null));
+  return (0, _jsxRuntime.jsx)("main", {
+    children: (0, _jsxRuntime.jsx)(_Loading.default, {})
+  });
 }
-},{"react":"../node_modules/react/index.js","./Components/Timer":"Components/Timer.js"}],"index.js":[function(require,module,exports) {
+},{"react/jsx-runtime":"../node_modules/react/jsx-runtime.js","./Components/Loading":"Components/Loading.tsx"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -33762,7 +35829,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var root = _client.default.createRoot(document.getElementById("root"));
 
 root.render( /*#__PURE__*/_react.default.createElement(_react.default.StrictMode, null, /*#__PURE__*/_react.default.createElement(_App.App, null)));
-},{"react":"../node_modules/react/index.js","react-dom/client":"../node_modules/react-dom/client.js","./App":"App.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-dom/client":"../node_modules/react-dom/client.js","./App":"App.tsx"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -33790,7 +35857,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55615" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54296" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
